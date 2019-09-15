@@ -220,6 +220,23 @@
       <ul id="toc" class="toc-list-h1">
           <li>
             <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#why-this-library" class="toc-h2 toc-link" data-title="Why this library">Why this library</a>
+                  </li>
+                  <li>
+                    <a href="#library-structure" class="toc-h2 toc-link" data-title="Library Structure">Library Structure</a>
+                  </li>
+                  <li>
+                    <a href="#how-to-install" class="toc-h2 toc-link" data-title="How to install">How to install</a>
+                  </li>
+                  <li>
+                    <a href="#minimal-example" class="toc-h2 toc-link" data-title="Minimal Example">Minimal Example</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#upcoming" class="toc-h1 toc-link" data-title="Upcoming">Upcoming</a>
           </li>
       </ul>
         <ul class="toc-footer">
@@ -230,6 +247,8 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
+<p><a href="https://github.com/LeoVen/C-Macro-Collections"><img src="https://img.shields.io/badge/GitHub-C%20Macro%20Collections-lightgrey.svg?logo=github" alt="github" /></a></p>
+
 <p><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License" />
 <img src="https://img.shields.io/badge/Version-v1.6.2-orange.svg" alt="Version" />
 <a href="https://travis-ci.org/LeoVen/C-Macro-Collections"><img src="https://travis-ci.org/LeoVen/C-Macro-Collections.svg?branch=master" alt="Build" /></a>
@@ -238,12 +257,250 @@
 <p>The C Macro Collections Library is a compilation of macros that can be used to generate common data structures for any desired type. These data structures are <a href="https://en.wikipedia.org/wiki/Type_safety">type safe</a>.</p>
 
 <p>The documentation is currently being written in hopes that in the future it can be used to help you get to know better this amazing C library.</p>
+<h2 id='why-this-library'>Why this library</h2>
+<p>C is a low level language and lacks all the data structures that we commonly use. Many high level languages already come with these collections so that we don&#39;t have to implement everything ourselves. This is why the C Macro Collections Library was created.</p>
 
-<p>Here is a preview of some of the things you will be able to find here:</p>
+<p>The library currently provides many data structures, such as:</p>
 
 <ul>
+<li>Linear Collections
+
+<ul>
+<li>List, LinkedList, Deque, Stack, Queue</li>
+</ul></li>
+<li>Sets
+
+<ul>
+<li>HashSet, TreeSet, MultiSet</li>
+</ul></li>
+<li>Maps
+
+<ul>
+<li>HashMap, TreeMap, MultiMap</li>
+</ul></li>
+<li>Heaps
+
+<ul>
+<li>Heap, IntervalHeap</li>
+</ul></li>
+</ul>
+
+<p>All with the following features:</p>
+
+<ul>
+<li><strong>Type-safe</strong> - No <code>void *</code> pointers are used. A collection of type <code>int</code> will only accept integers;</li>
+<li><strong>Customization</strong> - Custom struct name and function namespace;</li>
+<li><strong>Bidirectional Iterators</strong> - Full support for iterators;</li>
+<li><strong>Nesting</strong> - Collections can be nested (List of Lists, HashSet of Stacks, etc).</li>
+</ul>
+<h2 id='library-structure'>Library Structure</h2>
+<p>The <code>src</code> folder is subdivided in 5 other folders and one file:</p>
+
+<blockquote>
+<p>The <code>dev</code> folder is an exact copy of <code>cmc</code> but it is filled with logging information regarding the code execution and debugging.</p>
+
+<p>The <code>sac</code> library contains fixed-length collections with an internal C array.</p>
+</blockquote>
+
+<ul>
+<li><strong>cmc</strong> - The main C Macro Collections Library</li>
+<li><strong>dev</strong> - The main C Macro Collections Library for development</li>
+<li><strong>ext</strong> - Extra collections</li>
+<li><strong>sac</strong> - Statically  Allocated Collections</li>
+<li><strong>utl</strong> - Utility like ForEach macros, logging, etc</li>
+<li><strong>macro_collections.h</strong> - Master header containing all collections and utilities</li>
+</ul>
+<h2 id='how-to-install'>How to install</h2>
+<blockquote>
+<p>Include header files like this</p>
+</blockquote>
+<pre class="highlight c tab-c"><code><span class="cp">#include &lt;cmc/list.h&gt;
+#include &lt;dev/deque.h&gt;
+#include &lt;utl/assert.h&gt;
+</span></code></pre>
+<blockquote>
+<p>Not like this</p>
+</blockquote>
+<pre class="highlight c tab-c"><code><span class="cp">#include &lt;list.h&gt;
+#include &lt;deque.h&gt;  // dev or cmc?
+#include &lt;assert.h&gt; // this will import from the standard library
+</span></code></pre>
+<p>No installation is required. All you have to do is include the appropriate header files, generate any collections that you desire and then compile your program. It is recommended that you include the headers relative to the <code>src</code> folder and include it with <code>-I path/to/library/src</code> as shown in the following example.</p>
+
+<p>The library has no external dependencies other than the C standard library.</p>
+<h2 id='minimal-example'>Minimal Example</h2>
+<p>Lets create a list of type <code>int</code>, add some elements to it and get the sum of all the elements printed on the screen.</p>
+<h3 id='include-headers'>Include headers</h3><pre class="highlight c tab-c"><code><span class="cp">#include &lt;cmc/list.h&gt;
+</span></code></pre>
+<p>First you need to include only the necessary headers. It is not recommended that you include everything with <code>macro_collections.h</code>, only in cases where you might be using almost all features from the library.</p>
+<h3 id='generating-a-list'>Generating a list</h3><pre class="highlight c tab-c"><code><span class="c1">// CMC_GENERATE_LIST(PFX, SNAME, V)
+</span><span class="n">CMC_GENERATE_LIST</span><span class="p">(</span><span class="n">il</span><span class="p">,</span> <span class="n">int_list</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+</code></pre>
+<p>The List is also known as <code>vector</code>, <code>ArrayList</code> and dynamic array. In fact the latter is the best description for this collection. It is a dynamic array that can grow and shrink as needed. To generate it we can simply call the macro <code>CMC_GENERATE_LIST</code> after our includes. It has three parameters:</p>
+
+<table><thead>
+<tr>
+<th style="text-align: center">Parameter name</th>
+<th>Purpose</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: center"><strong>PFX</strong></td>
+<td>Functions prefix (namespace)</td>
+</tr>
+<tr>
+<td style="text-align: center"><strong>SNAME</strong></td>
+<td>Struct name</td>
+</tr>
+<tr>
+<td style="text-align: center"><strong>V</strong></td>
+<td>The list value type (can be any valid data type)</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+All collections can be generated by using the macro CMC_GENERATE_ and then the name of the include (in this case list.h) but in uppercase without the `.h`.
+</aside>
+<h3 id='initializing-and-adding-elements'>Initializing and adding elements</h3><pre class="highlight c tab-c"><code><span class="c1">// Allocate an int_list with an initial capacity of 100
+</span><span class="n">int_list</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">il_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+<span class="c1">// Adding elements to the back of the list
+</span><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">1000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">il_push_back</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="c1">// Something went wrong (check out documentation)
+</span>    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>To initialize any collection we call a function <code>_new</code>. Since the <code>PFX</code> parameter is set to <code>il</code> all functions related to our list of integer will be prefixed by <code>il</code>, so <code>_new</code> becomes <code>il_new</code>.</p>
+
+<p>The list name is <code>int_list</code> as defined by <code>SNAME</code>. This type is a typedef like:</p>
+
+<p><code>typedef struct SNAME##_s SNAME;</code></p>
+
+<p>Which expands to:</p>
+
+<p><code>typedef struct int_list_s int_list</code></p>
+
+<p>To add elements to the back of a list we can use <code>il_push_back</code>. This function will first check if the list has enough space for a new element. If not, reallocate the internal buffer with doubled size and then add the new element.</p>
+<h3 id='iteration'>Iteration</h3>
+<blockquote>
+<p>It is recommended that the iterator is allocated on the stack</p>
+</blockquote>
+<pre class="highlight c tab-c"><code><span class="c1">// Resulting sum will be stored here
+</span><span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// Declare our iterator (allocating it on the stack)
+</span><span class="n">int_list_iter</span> <span class="n">it</span><span class="p">;</span>
+
+<span class="c1">// Loop for each element
+</span><span class="k">for</span> <span class="p">(</span><span class="n">il_iter_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span> <span class="o">!</span><span class="n">il_iter_end</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span> <span class="n">il_iter_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="c1">// Accessing the value
+</span>    <span class="kt">int</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">il_iter_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span>
+
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">elem</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
+</code></pre>
+<p>There are 6 (2 optional) steps to iterate over the elements of any collection:</p>
+
+<table><thead>
+<tr>
+<th style="text-align: center">Step</th>
+<th>Description</th>
+<th>Function</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: center">1</td>
+<td>Allocate the iterator (optional)</td>
+<td><code>il_iter_new</code></td>
+</tr>
+<tr>
+<td style="text-align: center">2</td>
+<td>Initialize the iterator given a target list</td>
+<td><code>il_iter_init</code></td>
+</tr>
+<tr>
+<td style="text-align: center">3</td>
+<td>Access the iterator&#39;s elements (value, index, etc)</td>
+<td><code>il_iter_value</code></td>
+</tr>
+<tr>
+<td style="text-align: center">4</td>
+<td>Go to the next element</td>
+<td><code>il_iter_next</code></td>
+</tr>
+<tr>
+<td style="text-align: center">5</td>
+<td>Check if we haven&#39;t reached the end of the list</td>
+<td><code>il_iter_end</code></td>
+</tr>
+<tr>
+<td style="text-align: center">6</td>
+<td>Free the iterator if it was allocated on the heap</td>
+<td><code>il_iter_free</code></td>
+</tr>
+</tbody></table>
+
+<p>Note that all iterator functions are prefixed by the user defined prefix and then by <code>iter</code> (<code>il + iter = il_iter</code>). Also, the steps <strong>1</strong> and <strong>6</strong> are optional so <code>il_iter_new</code> and <code>il_iter_free</code> are not used in the example.</p>
+
+<p>By the end of the example we have the variable <code>sum</code> with the sum of all integers inside our list. We can then print it and this example is almost done.</p>
+<h3 id='freeing-resources'>Freeing resources</h3><pre class="highlight c tab-c"><code><span class="c1">// void il_free(int_list *_list_, void(*deallocator)(int))
+</span><span class="n">il_free</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</code></pre>
+<p>The list is currently allocated in memory. To deallocate it we call <code>il_free</code>. This function takes a pointer to the allocated list and a pointer to a <code>deallocator</code> function that will be responsible for deallocating each element in the list. This last parameter is optional and we won&#39;t be using it since our data type <code>int</code> is not allocated in the heap. This optional parameter can be set to <code>NULL</code> to be ignored by the <code>il_free</code> function.</p>
+<h3 id='compile-and-run'>Compile and run</h3>
+<blockquote>
+<p>source.c</p>
+</blockquote>
+<pre class="highlight c tab-c"><code><span class="cp">#include &lt;cmc/list.h&gt;
+</span>
+<span class="n">CMC_GENERATE_LIST</span><span class="p">(</span><span class="n">il</span><span class="p">,</span> <span class="n">int_list</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">int_list</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">il_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">1000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">il_push_back</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="c1">// Something went wrong (check out documentation)
+</span>        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">int_list_iter</span> <span class="n">it</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">il_iter_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">,</span> <span class="n">list</span><span class="p">);</span> <span class="o">!</span><span class="n">il_iter_end</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span> <span class="n">il_iter_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">elem</span> <span class="o">=</span> <span class="n">il_iter_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">elem</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
+
+    <span class="n">il_free</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+<p>If the source file is <code>source.c</code>, all you have to do is to include the <code>src</code> folder to the include path and compile. The following example uses <code>gcc</code>:</p>
+
+<p><code>gcc source.c -I path/to/library/src</code></p>
+<h3 id='conclusion'>Conclusion</h3>
+<p>The C Macro Collections Library is prepared to accept any data type and is highly customizable. It is also very easy to integrate and no previous compilation is required. The library also comes with many utilities in the <code>utl</code> folder that are designed to work well with all collections.</p>
+<h1 id='upcoming'>Upcoming</h1>
+<p>This documentation is still being written. Here is some of the things you will be able to find here:</p>
+
+<ul>
+<li>Full explanation about data structures</li>
 <li>Full documentation about all current collections and others to come</li>
 <li>Fully explained examples</li>
+<li>Benchmark examples</li>
 </ul>
 
       </div>
