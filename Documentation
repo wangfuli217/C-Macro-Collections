@@ -1,0 +1,3151 @@
+<p><strong>Check out the new documentation at</strong> https://leoven.github.io/C-Macro-Collections/</p>
+
+<p><span id="collections_index"> Collections Documentation </span></p>
+
+<ul>
+<li><a href="#Deque">Deque</a></li>
+<li><a href="#HashMap">HashMap</a></li>
+<li><a href="#HashSet">HashSet</a></li>
+<li><a href="#Heap">Heap</a></li>
+<li><a href="#LinkedList">LinkedList</a></li>
+<li><a href="#List">List</a></li>
+<li><a href="#Queue">Queue</a></li>
+<li><a href="#Stack">Stack</a></li>
+<li><a href="#TreeMap">TreeMap</a></li>
+<li><a href="#TreeSet">TreeSet</a></li>
+</ul>
+
+<p>Others</p>
+
+<ul>
+<li><a href="#ForEach">ForEach</a></li>
+</ul>
+<h1 id='deque'><a href="#collections_index">Deque</a></h1>
+<p>A double-ended queue backed by a circular buffer. Elements can be added and removed from both ends but not in the middle. Can also be used as a queue.</p>
+<h3 id='generation-macro'>Generation Macro</h3>
+<ul>
+<li><code>DEQUE_GENERATE(PFX, SNAME, FMOD, V)</code>
+
+<ul>
+<li><code>PFX</code> - Functions namespace or prefix.</li>
+<li><code>SNAME</code> - Structure name.</li>
+<li><code>FMOD</code> - Function modifier (static or empty).</li>
+<li><code>V</code> - Element type.</li>
+</ul></li>
+</ul>
+<h3 id='defined-structures'>Defined Structures</h3>
+<ul>
+<li><p><code>struct SNAME##_s</code> - Structure Name (represents a double-ended queue structure)</p>
+
+<ul>
+<li><code>V *buffer</code> - Dynamic circular array of elements.</li>
+<li><code>size_t capacity</code> - Current circular array capacity.</li>
+<li><code>size_t count</code> - Current amount of elements.</li>
+<li><code>size_t front</code> - Index representing the front of the deque.</li>
+<li><code>size_t rear</code> - Index representing the back of the deque.</li>
+<li><code>it_start</code> - Function that returns an iterator to the start of the deque.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_start)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+<li><code>it_end</code> - Function that returns an iterator to the end of the deque.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_end)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_iter_s</code> - Structure Iterator (represents a double-ended queue iterator)</p>
+
+<ul>
+<li><code>struct SNAME##_s *target</code> - Deque being iterated over.</li>
+<li><code>size_t cursor</code> - Cursor&#39;s current position (index).</li>
+<li><code>size_t index</code> - Relative index to all elements in the iteration.</li>
+<li><code>bool start</code> - If the iterator reached the start of the iteration.</li>
+<li><code>bool end</code> - If the iterator reached the end of iteration.</li>
+</ul></li>
+</ul>
+<h3 id='typedefs'>Typedefs</h3>
+<ul>
+<li><code>typedef struct SNAME##_s SNAME</code></li>
+<li><code>typedef struct SNAME##_s *SNAME##_ptr</code></li>
+<li><code>typedef struct SNAME##_iter_s SNAME##_iter</code></li>
+<li><code>typedef struct SNAME##_iter_s *SNAME##_iter_ptr</code></li>
+</ul>
+<h3 id='defined-functions'><span id="deque_function_index"> Defined Functions </span></h3><h4 id='collection-allocation-and-deallocation'>Collection Allocation and Deallocation</h4>
+<ul>
+<li><a href="#deque_new">_new()</a></li>
+<li><a href="#deque_clear">_clear()</a></li>
+<li><a href="#deque_free">_free()</a></li>
+</ul>
+<h4 id='input-and-output'>Input and Output</h4>
+<ul>
+<li><a href="#deque_push_front">_push_front()</a></li>
+<li><a href="#deque_push_back">_push_back()</a></li>
+<li><a href="#deque_pop_front">_pop_front()</a></li>
+<li><a href="#deque_pop_back">_pop_back()</a></li>
+</ul>
+<h4 id='conditional-input-and-output'>Conditional Input and Output</h4>
+<ul>
+<li><a href="#deque_push_front_if">_push_front_if()</a></li>
+<li><a href="#deque_push_back_if">_push_back_if()</a></li>
+<li><a href="#deque_pop_front_if">_pop_front_if()</a></li>
+<li><a href="#deque_pop_back_if">_pop_back_if()</a></li>
+</ul>
+<h4 id='elements-access'>Elements Access</h4>
+<ul>
+<li><a href="#deque_front">_front()</a></li>
+<li><a href="#deque_back">_back()</a></li>
+</ul>
+<h4 id='collection-state'>Collection State</h4>
+<ul>
+<li><a href="#deque_contains">_contains()</a></li>
+<li><a href="#deque_empty">_empty()</a></li>
+<li><a href="#deque_full">_full()</a></li>
+<li><a href="#deque_count">_count()</a></li>
+<li><a href="#deque_capacity">_capacity()</a></li>
+</ul>
+<h4 id='iterator-allocation-and-deallocation'>Iterator Allocation and Deallocation</h4>
+<ul>
+<li><a href="#deque_iter_new">_iter_new()</a></li>
+<li><a href="#deque_iter_free">_iter_free()</a></li>
+</ul>
+<h4 id='iterator-initialization'>Iterator Initialization</h4>
+<ul>
+<li><a href="#deque_iter_init">_iter_init()</a></li>
+</ul>
+<h4 id='iterator-state'>Iterator State</h4>
+<ul>
+<li><a href="#deque_iter_start">_iter_start()</a></li>
+<li><a href="#deque_iter_end">_iter_end()</a></li>
+</ul>
+<h4 id='iterator-movement'>Iterator Movement</h4>
+<ul>
+<li><a href="#deque_iter_to_start">_iter_to_start()</a></li>
+<li><a href="#deque_iter_to_end">_iter_to_end()</a></li>
+<li><a href="#deque_iter_next">_iter_next()</a></li>
+<li><a href="#deque_iter_prev">_iter_prev()</a></li>
+</ul>
+<h4 id='iterator-access'>Iterator Access</h4>
+<ul>
+<li><a href="#deque_iter_value">_iter_value()</a></li>
+<li><a href="#deque_iter_rvalue">_iter_rvalue()</a></li>
+<li><a href="#deque_iter_index">_iter_index()</a></li>
+</ul>
+<h2 id='_new'><a href="#deque_function_index"><span id="deque_new"> _new() </span></a></h2>
+<p>Allocates and returns a new deque with an internal capacity of the specified value. If allocation fails, <code>NULL</code> is returned.</p>
+<h4 id='declaration'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new(size_t capacity);</code></p>
+</blockquote>
+<h4 id='parameters'>Parameters</h4>
+<ol>
+<li><code>size_t capacity</code> - The initial capacity for the deque.</li>
+</ol>
+<h4 id='returns'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated deque.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h4 id='example'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "deque.h"
+</span>
+<span class="c1">// Generate a DEQUE of type int
+</span><span class="n">DEQUE_GENERATE</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">deque</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a deque of integers with an initial capacity of 100
+</span>    <span class="c1">// The deque and its internal buffer is allocated in the heap
+</span>    <span class="n">deque</span> <span class="o">*</span><span class="n">int_deque</span> <span class="o">=</span> <span class="n">d_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">int_deque</span><span class="p">)</span>
+        <span class="c1">// Allocation failed
+</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="c1">// Deque is ready to be used
+</span>
+    <span class="c1">// Be sure to free its resources later
+</span>    <span class="n">d_free</span><span class="p">(</span><span class="n">int_deque</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_clear'><a href="#deque_function_index"><span id="deque_clear"> _clear() </span></a></h2>
+<p>Removes all elements in the deque but does not frees the deque structure. This will not free any element belonging to the deque.</p>
+<h4 id='declaration-2'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_clear(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-2'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque to have all of its elements removed.</li>
+</ol>
+<h4 id='undefined-behavior'>Undefined Behavior</h4>
+<ul>
+<li>If the deque pointer is not a valid memory location.</li>
+</ul>
+<h4 id='example-2'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "deque.h"
+</span>
+<span class="c1">// Generate a DEQUE of type int
+</span><span class="n">DEQUE_GENERATE</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">deque</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a deque of integers with an initial capacity of 100
+</span>    <span class="n">deque</span> <span class="o">*</span><span class="n">int_deque</span> <span class="o">=</span> <span class="n">d_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// Add elements to the deque
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">d_push_front</span><span class="p">(</span><span class="n">int_deque</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+    <span class="c1">// empty the deque
+</span>    <span class="n">d_clear</span><span class="p">(</span><span class="n">int_deque</span><span class="p">);</span>
+
+    <span class="c1">// deque now has a size of 0 but the deque was not freed from
+</span>    <span class="c1">// memory and can still be used
+</span>
+    <span class="c1">// Be sure to free its resources after use
+</span>    <span class="n">d_free</span><span class="p">(</span><span class="n">int_deque</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_free'><a href="#deque_function_index"><span id="deque_free"> _free() </span></a></h2>
+<p>Frees from memory the deque internal buffer and the structure itself. Note that if the elements inside the deque are pointers to allocated memory, this function might cause memory leaks as it does not deals with its elements.</p>
+<h4 id='declaration-3'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_free(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-3'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque to be freed from memory.</li>
+</ol>
+<h2 id='_push_front'><a href="#deque_function_index"><span id="deque_push_front"> _push_front() </span></a></h2>
+<p>Adds an element to the front of the deque.</p>
+<h4 id='declaration-4'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_front(SNAME *_deque_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-4'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-2'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the front of the deque.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h2 id='_push_back'><a href="#deque_function_index"><span id="deque_push_back"> _push_back() </span></a></h2>
+<p>Adds an element to the back of the deque.</p>
+<h4 id='declaration-5'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_back(SNAME *_deque_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-5'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-3'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the back of the deque.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h2 id='_pop_front'><a href="#deque_function_index"><span id="deque_pop_front"> _pop_front() </span></a></h2>
+<p>Removes an element from the front of the deque. If the deque is empty, nothing happens.</p>
+<h4 id='declaration-6'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_front(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-6'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-4'>Returns</h4>
+<ol>
+<li><code>true</code> - If an element was successfully removed from the front of the deque.</li>
+<li><code>false</code> - If the deque is empty.</li>
+</ol>
+<h2 id='_pop_back'><a href="#deque_function_index"><span id="deque_pop_back"> _pop_back() </span></a></h2>
+<p>Removes an element from the back of the deque. If the deque is empty, nothing happens.</p>
+<h4 id='declaration-7'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_back(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-7'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-5'>Returns</h4>
+<ol>
+<li><code>true</code> - If an element was successfully removed from the back of the deque.</li>
+<li><code>false</code> - If the deque is empty.</li>
+</ol>
+<h2 id='_push_front_if'><a href="#deque_function_index"><span id="deque_push_front_if"> _push_front_if() </span></a></h2>
+<p>Adds an element to the front of the deque if the condition evaluates to true.</p>
+<h4 id='declaration-8'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_front_if(SNAME *_deque_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-8'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-6'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the front of the deque.</li>
+<li><code>false</code> - If the condition evaluated to false, or if buffer reallocation failed.</li>
+</ol>
+<h2 id='_push_back_if'><a href="#deque_function_index"><span id="deque_push_back_if"> _push_back_if() </span></a></h2>
+<p>Adds an element to the back of the deque if the condition evaluates to true.</p>
+<h4 id='declaration-9'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_back_if(SNAME *_deque_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-9'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-7'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the back of the deque.</li>
+<li><code>false</code> - If the condition evaluated to false, or if buffer reallocation failed.</li>
+</ol>
+<h2 id='_pop_front_if'><a href="#deque_function_index"><span id="deque_pop_front_if"> _pop_front_if() </span></a></h2>
+<p>Removes an element from the front of the deque if the condition evaluates to true. If the deque is empty, nothing happens.</p>
+<h4 id='declaration-10'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_front_if(SNAME *_deque_, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-10'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-8'>Returns</h4>
+<ol>
+<li><code>true</code> - If an element was successfully removed from the front of the deque.</li>
+<li><code>false</code> - If the condition evaluated to false, or if the deque is empty.</li>
+</ol>
+<h2 id='_pop_back_if'><a href="#deque_function_index"><span id="deque_pop_back_if"> _pop_back_if() </span></a></h2>
+<p>Removes an element from the back of the deque if the condition evaluates to true. If the deque is empty, nothing happens.</p>
+<h4 id='declaration-11'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_back_if(SNAME *_deque_, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-11'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-9'>Returns</h4>
+<ol>
+<li><code>true</code> - If an element was successfully removed from the back of the deque.</li>
+<li><code>false</code> - If the condition evaluated to false, or if the deque is empty.</li>
+</ol>
+<h2 id='_front'><a href="#deque_function_index"><span id="deque_front"> _front() </span></a></h2>
+<p>Returns the front element if the specified deque is not empty.</p>
+<h4 id='declaration-12'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_front(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-12'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-10'>Returns</h4>
+<ol>
+<li><code>V</code> - The front element of the deque.</li>
+<li>The default value, where <code>V</code> has all of its bytes set to <code>0</code> in case the deque is empty.</li>
+</ol>
+<h2 id='_back'><a href="#deque_function_index"><span id="deque_back"> _back() </span></a></h2>
+<p>Returns the rear element if the specified deque is not empty.</p>
+<h4 id='declaration-13'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_back(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-13'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-11'>Returns</h4>
+<ol>
+<li><code>V</code> - The rear element of the deque.</li>
+<li>The default value, where <code>V</code> has all of its bytes set to <code>0</code> in case the deque is empty.</li>
+</ol>
+<h2 id='_contains'><a href="#deque_function_index"><span id="deque_contains"> _contains() </span></a></h2>
+<p>Check if an element is present in the deque according to a <code>comparator</code> function. This function runs in <code>O(n)</code> and might slow down the program execution if the deque has a lot of elements of if this function is called multiple times.</p>
+<h4 id='declaration-14'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_contains(SNAME *_deque_, V element, int (*comparator)(V, V));</code></p>
+</blockquote>
+<h4 id='parameters-14'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+<li><code>V element</code> - Element to check its presence in the deque.</li>
+<li><code>int (*comparator)(V, V)</code> - Comparison function. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ol>
+<h4 id='returns-12'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element is present in the deque.</li>
+<li><code>false</code> - If the element is not present in the deque.</li>
+</ol>
+<h2 id='_empty'><a href="#deque_function_index"><span id="deque_empty"> _empty() </span></a></h2>
+<p>Returns true if the deque is empty, otherwise false.</p>
+<h4 id='declaration-15'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_empty(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-15'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-13'>Returns</h4>
+<ol>
+<li><code>true</code> - If the deque is empty.</li>
+<li><code>false</code> - If there is at least one element in the deque.</li>
+</ol>
+<h2 id='_full'><a href="#deque_function_index"><span id="deque_full"> _full() </span></a></h2>
+<p>Returns true if the deque is full, otherwise false. The deque is considered full when its internal buffer is filled up, so the next element added to the deque will required a resizing of the buffer, but note that the deque can grow indefinitely.</p>
+<h4 id='declaration-16'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_full(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-16'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-14'>Returns</h4>
+<ol>
+<li><code>true</code> - If the deque internal buffer is full.</li>
+<li><code>false</code> - If the deque internal buffer is not full.</li>
+</ol>
+<h2 id='_count'><a href="#deque_function_index"><span id="deque_count"> _count() </span></a></h2>
+<p>Returns the amount of elements in the deque.</p>
+<h4 id='declaration-17'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_count(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-17'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-15'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The amount of elements in the deque.</li>
+</ol>
+<h2 id='_capacity'><a href="#deque_function_index"><span id="deque_capacity"> _capacity() </span></a></h2>
+<p>Returns the internal buffer&#39;s current capacity.</p>
+<h4 id='declaration-18'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_capacity(SNAME *_deque_);</code></p>
+</blockquote>
+<h4 id='parameters-18'>Parameters</h4>
+<ol>
+<li><code>SNAME *_deque_</code> - Target deque.</li>
+</ol>
+<h4 id='returns-16'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The internal buffer&#39;s current capacity.</li>
+</ol>
+<h2 id='_iter_new'><a href="#deque_function_index"><span id="deque_iter_new"> _iter_new() </span></a></h2>
+<p>Creates a new iterator allocated on the heap and initializes it with a target deque. The iterator&#39;s cursor will be positioned at the front of the deque.</p>
+<h4 id='declaration-19'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME##_iter *PFX##_iter_new(SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-19'>Parameters</h4>
+<ol>
+<li><code>SNAME *target</code> - Target deque.</li>
+</ol>
+<h4 id='returns-17'>Returns</h4>
+<ol>
+<li><code>SNAME##_iter *</code> - A heap allocated deque iterator.</li>
+</ol>
+<h2 id='_iter_free'><a href="#deque_function_index"><span id="deque_iter_free"> _iter_free() </span></a></h2>
+<p>Frees a heap allocated deque iterator from memory.</p>
+<h4 id='declaration-20'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_free(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-20'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be freed from memory.</li>
+</ol>
+<h2 id='_iter_init'><a href="#deque_function_index"><span id="deque_iter_init"> _iter_init() </span></a></h2>
+<p>Initializes an iterator with a given target deque. The iterator&#39;s cursor will be positioned at the front of the deque. The iterator must have been allocated already. This function simply initializes the structure.</p>
+<h4 id='declaration-21'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_init(SNAME##_iter *iter, SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-21'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be initialized.</li>
+<li><code>SNAME *target</code> - Target deque.</li>
+</ol>
+<h2 id='_iter_start'><a href="#deque_function_index"><span id="deque_iter_start"> _iter_start() </span></a></h2>
+<p>Returns true if the iterator has reached the start (front element) of the deque. If false, the iterator is still possible to iterate to a previous element.</p>
+<h4 id='declaration-22'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-22'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-18'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the start of the deque.</li>
+<li><code>false</code> - If the iterator has not reached the start of the deque.</li>
+</ol>
+<h2 id='_iter_end'><a href="#deque_function_index"><span id="deque_iter_end"> _iter_end() </span></a></h2>
+<p>Returns true if the iterator has reached the end (rear element) of the deque. If false, the iterator is still possible to iterate to a next element.</p>
+<h4 id='declaration-23'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-23'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-19'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the end of the deque.</li>
+<li><code>false</code> - If the iterator has not reached the end of the deque.</li>
+</ol>
+<h2 id='_iter_to_start'><a href="#deque_function_index"><span id="deque_iter_to_start"> _iter_to_start() </span></a></h2>
+<p>Moves the cursor of the target iterator to the start (front element) of the deque.</p>
+<h4 id='declaration-24'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-24'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_to_end'><a href="#deque_function_index"><span id="deque_iter_to_end"> _iter_to_end() </span></a></h2>
+<p>Moves the cursor of the target iterator to the end (rear element) of the deque.</p>
+<h4 id='declaration-25'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-25'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_next'><a href="#deque_function_index"><span id="deque_iter_next"> _iter_next() </span></a></h2>
+<p>Moves the target deque iterator to the next element if possible.</p>
+<h4 id='declaration-26'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_next(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-26'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-20'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the next element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the next element, hence reaching the end of the iteration.</li>
+</ol>
+<h2 id='_iter_prev'><a href="#deque_function_index"><span id="deque_iter_prev"> _iter_prev() </span></a></h2>
+<p>Moves the target deque iterator to the previous element if possible.</p>
+<h4 id='declaration-27'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_prev(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-27'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-21'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the previous element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the previous element, hence reaching the start of the iteration.</li>
+</ol>
+<h2 id='_iter_value'><a href="#deque_function_index"><span id="deque_iter_value"> _iter_value() </span></a></h2>
+<p>Returns the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-28'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_iter_value(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-28'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-22'>Returns</h4>
+<ol>
+<li><code>V</code> - The element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-2'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_rvalue'><a href="#deque_function_index"><span id="deque_iter_rvalue"> _iter_rvalue() </span></a></h2>
+<p>Returns a reference to the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-29'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V *PFX##_iter_rvalue(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-29'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-23'>Returns</h4>
+<ol>
+<li><code>V *</code> - A reference to the element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-3'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_index'><a href="#deque_function_index"><span id="deque_iter_index"> _iter_index() </span></a></h2>
+<p>Returns the current position of the iterator relative to all the elements in the iteration. The index is <code>0</code> based and goes up to <code>count - 1</code>.</p>
+<h4 id='declaration-30'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_iter_index(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-30'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-24'>Returns</h4>
+<ol>
+<li><code>size_t</code> - Current position of the iterator relative to all elements in the iteration.</li>
+</ol>
+<h4 id='undefined-behavior-4'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized.</li>
+</ul>
+<h1 id='hashmap'><a href="#collections_index">HashMap</a></h1>
+<p>A HashMap is an associative container that maps a key <code>K</code> to a value <code>V</code> containing only unique keys. The value is only accessible through the key. The keys are not sorted, unlike a TreeMap. The main advantage of this container is that lookups are almost instantaneous, requiring very few comparisons (at least one) to get the value corresponding to a key.</p>
+
+<p>HashMaps are one of the most used data structures as they are very useful as lookup tables.</p>
+<h1 id='hashset'><a href="#collections_index">HashSet</a></h1>
+<p>A HashSet is an unordered collection of unique elements implemented as a hash-table. Searching for elements in this collection is almost instantaneous, requiring very few comparisons (at least one) to check if a certain element is present the the set.</p>
+<h1 id='heap'><a href="#collections_index">Heap</a></h1>
+<p>A heap is a nearly complete binary tree backed by a growable array. The first element of the array (or the root element of the tree) is the highest/lowest element. The min-heap is commonly used as a priority-queue and a max-heap is commonly used to sort an array of elements.</p>
+<h1 id='linkedlist'><a href="#collections_index">LinkedList</a></h1>
+<p>A list where each element is linked by nodes. Elements can be added and removed from both ends of the list and also in the middle. The linked list can be used to implement other data structures like queues, stacks and deques.</p>
+<h1 id='list'><a href="#collections_index">List</a></h1>
+<p>A List is a Dynamic Array that store its elements contiguously. It has an internal buffer that is pre-allocated with a greater capacity than necessary in order to foresee new elements being added. The items can be added at both ends of the list and at the middle (with a given index).</p>
+
+<p>Insertions at the start are more costly as it is necessary to shift all elements one position to the right to give space to a new element being added at index 0. Insertions at the end are instantaneous as long as there is enough space in the buffer. Insertions at the middle will be based on an index. The index represents where the element being added will be located once the operation ends. This operation might also need to shift elements. It is also possible to add arrays of elements in the list.</p>
+
+<p>When the buffer is filled, it is reallocated with a greater capacity, usually being doubled.</p>
+
+<p>Removing elements follows the same principle. Removing the front element will require to shift all other elements one position to the left, thus being slower than removing from the end in which is done in constant time. Removing elements in the middle of the list will also require shifting elements to the left. Is is also possible to remove a range of elements or extract them, creating a new list with the removed items.</p>
+
+<p>The iterator is a simple structure that is capable of going back and forwards. Any modifications to the target list during iteration is considered undefined behavior. Its sole purpose is to facilitate navigation through a list.</p>
+<h3 id='generation-macro-2'>Generation Macro</h3>
+<ul>
+<li><code>LIST_GENERATE(PFX, SNAME, FMOD, V)</code>
+
+<ul>
+<li><code>PFX</code> - Functions namespace or prefix.</li>
+<li><code>SNAME</code> - Structure name.</li>
+<li><code>FMOD</code> - Function modifier (static or empty).</li>
+<li><code>V</code> - Element type.</li>
+</ul></li>
+</ul>
+<h3 id='defined-structures-2'>Defined Structures</h3>
+<ul>
+<li><p><code>struct SNAME##_s</code> - Structure Name (represents a list structure)</p>
+
+<ul>
+<li><code>V *buffer</code> - Internal storage.</li>
+<li><code>size_t capacity</code> - Storage capacity.</li>
+<li><code>size_t count</code> - Total elements in the list.</li>
+<li><code>it_start</code> - Function that returns an iterator to the start of the list.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_start)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+<li><code>it_end</code> - Function that returns an iterator to the end of the list.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_end)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_iter_s</code> - Structure Iterator (represents a list iterator)</p>
+
+<ul>
+<li><code>struct SNAME##_s *target</code> - List being iterated over.</li>
+<li><code>size_t cursor</code> - Index pointing to the next or previous element in the iteration.</li>
+<li><code>bool start</code> - If the iterator reached the start of the list.</li>
+<li><code>bool end</code> - If the iterator reached the end of the list.</li>
+</ul></li>
+</ul>
+<h3 id='typedefs-2'>Typedefs</h3>
+<ul>
+<li><code>typedef struct SNAME##_s SNAME</code></li>
+<li><code>typedef struct SNAME##_s *SNAME##_ptr</code></li>
+<li><code>typedef struct SNAME##_iter_s SNAME##_iter</code></li>
+<li><code>typedef struct SNAME##_iter_s *SNAME##_iter_ptr</code></li>
+</ul>
+<h3 id='defined-functions-2'><span id="list_function_index"> Defined Functions </span></h3><h4 id='collection-allocation-and-deallocation-2'>Collection Allocation and Deallocation</h4>
+<ul>
+<li><a href="#list_new">_new()</a></li>
+<li><a href="#list_new_from">_new_from()</a></li>
+<li><a href="#list_clear">_clear()</a></li>
+<li><a href="#list_free">_free()</a></li>
+</ul>
+<h4 id='input-and-output-2'>Input and Output</h4>
+<ul>
+<li><a href="#list_push_front">_push_front()</a></li>
+<li><a href="#list_push">_push()</a></li>
+<li><a href="#list_push_back">_push_back()</a></li>
+<li><a href="#list_pop_front">_pop_front()</a></li>
+<li><a href="#list_pop">_pop()</a></li>
+<li><a href="#list_pop_back">_pop_back()</a></li>
+</ul>
+<h4 id='conditional-input-and-output-2'>Conditional Input and Output</h4>
+<ul>
+<li><a href="#list_push_if">_push_if()</a></li>
+<li><a href="#list_pop_if">_pop_if()</a></li>
+</ul>
+<h4 id='range-input-and-output'>Range Input and Output</h4>
+<ul>
+<li><a href="#list_prepend">_prepend()</a></li>
+<li><a href="#list_insert">_insert()</a></li>
+<li><a href="#list_append">_append()</a></li>
+<li><a href="#list_remove">_remove()</a></li>
+<li><a href="#list_extract">_extract()</a></li>
+</ul>
+<h4 id='elements-access-2'>Elements Access</h4>
+<ul>
+<li><a href="#list_front">_front()</a></li>
+<li><a href="#list_get">_get()</a></li>
+<li><a href="#list_get_ref">_get_ref()</a></li>
+<li><a href="#list_back">_back()</a></li>
+<li><a href="#list_indexof">_indexof()</a></li>
+</ul>
+<h4 id='collection-state-2'>Collection State</h4>
+<ul>
+<li><a href="#list_contains">_contains()</a></li>
+<li><a href="#list_empty">_empty()</a></li>
+<li><a href="#list_full">_full()</a></li>
+<li><a href="#list_count">_count()</a></li>
+<li><a href="#list_fits">_fits()</a></li>
+<li><a href="#list_capacity">_capacity()</a></li>
+</ul>
+<h4 id='iterator-allocation-and-deallocation-2'>Iterator Allocation and Deallocation</h4>
+<ul>
+<li><a href="#list_iter_new">_iter_new()</a></li>
+<li><a href="#list_iter_free">_iter_free()</a></li>
+</ul>
+<h4 id='iterator-initialization-2'>Iterator Initialization</h4>
+<ul>
+<li><a href="#list_iter_init">_iter_init()</a></li>
+</ul>
+<h4 id='iterator-state-2'>Iterator State</h4>
+<ul>
+<li><a href="#list_iter_start">_iter_start()</a></li>
+<li><a href="#list_iter_end">_iter_end()</a></li>
+</ul>
+<h4 id='iterator-movement-2'>Iterator Movement</h4>
+<ul>
+<li><a href="#list_iter_to_start">_iter_to_start()</a></li>
+<li><a href="#list_iter_to_end">_iter_to_end()</a></li>
+<li><a href="#list_iter_next">_iter_next()</a></li>
+<li><a href="#list_iter_prev">_iter_prev()</a></li>
+</ul>
+<h4 id='iterator-access-2'>Iterator Access</h4>
+<ul>
+<li><a href="#list_iter_value">_iter_value()</a></li>
+<li><a href="#list_iter_rvalue">_iter_rvalue()</a></li>
+<li><a href="#list_iter_index">_iter_index()</a></li>
+</ul>
+<h2 id='_new-2'><a href="#list_function_index"><span id="list_new"> _new() </span></a></h2>
+<p>Allocates and returns a new list with an internal capacity of the specified value. If allocation fails, <code>NULL</code> is returned.</p>
+<h4 id='declaration-31'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new(size_t capacity);</code></p>
+</blockquote>
+<h4 id='parameters-31'>Parameters</h4>
+<ol>
+<li><code>size_t capacity</code> - The initial capacity for the list.</li>
+</ol>
+<h4 id='returns-25'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated list.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h4 id='example-3'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="c1">// The list and its internal buffer is allocated in the heap
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">int_list</span><span class="p">)</span>
+        <span class="c1">// Allocation failed
+</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="c1">// List is ready to be used
+</span>
+    <span class="c1">// Be sure to free its resources later
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_new_from'><a href="#list_function_index"><span id="list_new_from"> _new_from() </span></a></h2>
+<p>Allocates and returns a new list from an already existing array. The list internal buffer&#39;s size will match the size of the given array.</p>
+<h4 id='declaration-32'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new_from(V *elements, size_t size);</code></p>
+</blockquote>
+<h4 id='parameters-32'>Parameters</h4>
+<ol>
+<li><code>V *elements</code> - Array of elements to be added to the list.</li>
+<li><code>size_t size</code> - Size of the array of elements.</li>
+</ol>
+<h4 id='returns-26'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated list with the given elements.</li>
+<li><code>NULL</code> - If allocation fails, or if size equals <code>0</code>.</li>
+</ol>
+<h4 id='undefined-behavior-5'>Undefined Behavior</h4>
+<ul>
+<li>If <code>size</code> is greater than the element array&#39;s actual size.</li>
+</ul>
+<h4 id='example-4'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type char
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">char</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// An array of characters
+</span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">letters</span> <span class="o">=</span> <span class="s">"abcdefghijklmnopqrstuvwxyz"</span><span class="p">;</span>
+
+    <span class="c1">// Make a list of characters from an already existing array
+</span>    <span class="c1">// In this case, a string
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">my_characters</span> <span class="o">=</span> <span class="n">l_new_from</span><span class="p">(</span><span class="n">letters</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">letters</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">my_characters</span><span class="p">)</span>
+        <span class="c1">// Allocation failed
+</span>        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="c1">// Be sure to free its resources after using
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">my_characters</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_clear-2'><a href="#list_function_index"><span id="list_clear"> _clear() </span></a></h2>
+<p>Removes all elements in the list but does not frees the list structure. After this function the list is empty and can still be used.</p>
+<h4 id='declaration-33'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_clear(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-33'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list to be cleared.</li>
+</ol>
+<h4 id='undefined-behavior-6'>Undefined Behavior</h4>
+<ul>
+<li>If the list pointer is not a valid memory location.</li>
+</ul>
+<h4 id='example-5'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// Add elements to the list
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">l_push_back</span><span class="p">(</span><span class="n">int_list</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+
+    <span class="c1">// empty the list
+</span>    <span class="n">l_clear</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+
+    <span class="c1">// list now has a size of 0 but the list was not freed from
+</span>    <span class="c1">// memory and can still be used
+</span>
+    <span class="c1">// Be sure to free its resources after use
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_free-2'><a href="#list_function_index"><span id="list_free"> _free() </span></a></h2>
+<p>Frees from memory the list internal buffer and the structure itself. Note that if the elements inside the list are pointers to allocated memory, this function might cause memory leaks as it does not deals with its elements.</p>
+<h4 id='declaration-34'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_free(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-34'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list to be freed from memory.</li>
+</ol>
+<h4 id='undefined-behavior-7'>Undefined Behavior</h4>
+<ul>
+<li>If the list pointer is not a valid memory location.</li>
+</ul>
+<h4 id='example-6'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// Operate on the list
+</span>
+    <span class="c1">// Free the list from memory
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+
+    <span class="c1">// At this point the list is invalid
+</span>    <span class="c1">// To be able to use it again, a call to l_new() must be made again
+</span><span class="p">}</span>
+</code></pre><h2 id='_push_front-2'><a href="#list_function_index"><span id="list_push_front"> _push_front() </span></a></h2>
+<p>Shifts all elements one position to the right and adds an element at the front of the list (index <code>0</code>). This function has a high runtime cost and should be avoided when possible.</p>
+<h4 id='declaration-35'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_front(SNAME *_list_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-35'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-27'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h4 id='undefined-behavior-8'>Undefined Behavior</h4>
+<ul>
+<li>If the list pointer is not a valid memory location.</li>
+</ul>
+<h4 id='example-7'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// For loop to add 200 elements in the list
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// This function is really slow as it needs to shift all the elements
+</span>        <span class="c1">// one position to the right and then add the new one at index 0
+</span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">l_push_front</span><span class="p">(</span><span class="n">int_list</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="c1">// The element i could not be added because the buffer reallocation
+</span>            <span class="c1">// failed.
+</span>        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Free the list from memory
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_push'><a href="#list_function_index"><span id="list_push"> _push() </span></a></h2>
+<p>Adds an element at a given index in the list. After it is successfully added to the list, the element is accessible at the index passed to the function.</p>
+<h4 id='declaration-36'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push(SNAME *_list_, V element, size_t index);</code></p>
+</blockquote>
+<h4 id='parameters-36'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>size_t index</code> - Index to add the new element.
+
+<ul>
+<li>Can&#39;t be greater than the list <code>count</code>.</li>
+</ul></li>
+</ol>
+<h4 id='returns-28'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed, or if <code>index</code> is greater than the list <code>count</code>.</li>
+</ol>
+<h4 id='example-8'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// For loop to add 200 elements in the list
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// Add new elements at the middle of the list
+</span>        <span class="c1">// This function is also quite expensive. It will require, on average,
+</span>        <span class="c1">// to shift (n / 2) elements to the right
+</span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">l_push</span><span class="p">(</span><span class="n">int_list</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">l_count</span><span class="p">(</span><span class="n">int_list</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="p">{</span>
+            <span class="c1">// The element i could not be added because the buffer reallocation
+</span>            <span class="c1">// failed or the index is greater than the list count of elements
+</span>        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Free the list from memory
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_push_back-2'><a href="#list_function_index"><span id="list_push_back"> _push_back() </span></a></h2>
+<p>Adds an element at the back of the list (index <code>count</code> where count is the amount of elements in the list). No shifts are required.</p>
+<h4 id='declaration-37'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_back(SNAME *_list_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-37'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-29'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h4 id='example-9'>Example</h4><pre class="highlight c tab-c"><code><span class="cp">#include "list.h"
+</span>
+<span class="c1">// Generate a LIST of type int
+</span><span class="n">LIST_GENERATE</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">list</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Make a list of integers with an initial capacity of 100
+</span>    <span class="n">list</span> <span class="o">*</span><span class="n">int_list</span> <span class="o">=</span> <span class="n">l_new</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+    <span class="c1">// For loop to add 200 elements in the list
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// Adds a new element to the end of the list. This is the fastest way
+</span>        <span class="c1">// to add an element to the list. If the list is not full, this
+</span>        <span class="c1">// operation is done instantly
+</span>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">l_push_back</span><span class="p">(</span><span class="n">int_list</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// The element i could not be added because the buffer reallocation
+</span>            <span class="c1">// failed.
+</span>        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Free the list from memory
+</span>    <span class="n">l_free</span><span class="p">(</span><span class="n">int_list</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre><h2 id='_pop_front-2'><a href="#list_function_index"><span id="list_pop_front"> _pop_front() </span></a></h2>
+<p>Removes the first element in the list (located at index <code>0</code>) and shifts all remaining elements to the left.</p>
+<h4 id='declaration-38'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_front(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-38'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-30'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the list.</li>
+<li><code>false</code> - If the list is empty.</li>
+</ol>
+<h2 id='_pop'><a href="#list_function_index"><span id="list_pop"> _pop() </span></a></h2>
+<p>Removes the element located at a given index and shifts all the elements to its right to the left.</p>
+<h4 id='declaration-39'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop(SNAME *_list_, size_t index);</code></p>
+</blockquote>
+<h4 id='parameters-39'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t index</code> - The index of the element to be removed.
+
+<ul>
+<li>Can&#39;t be greater than or equal to the list <code>count</code>.</li>
+</ul></li>
+</ol>
+<h4 id='returns-31'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the list.</li>
+<li><code>false</code> - If the list is empty, or if <code>index</code> is greater than or equal to the list <code>count</code>.</li>
+</ol>
+<h2 id='_pop_back-2'><a href="#list_function_index"><span id="list_pop_back"> _pop_back() </span></a></h2>
+<p>Removes the last element in the list (located at index <code>count - 1</code>). No shifts are required.</p>
+<h4 id='declaration-40'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_back(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-40'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-32'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the list.</li>
+<li><code>false</code> - If the list is empty.</li>
+</ol>
+<h2 id='_push_if'><a href="#list_function_index"><span id="list_push_if"> _push_if() </span></a></h2>
+<p>Adds an element at a given index if the condition evaluates to true.</p>
+<h4 id='declaration-41'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_if(SNAME *_list_, V element, size_t index, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-41'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>size_t index</code> - Index to add the new element.
+
+<ul>
+<li>Can&#39;t be greater than the list <code>count</code>.</li>
+</ul></li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-33'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the list.</li>
+<li><code>false</code> - If the condition evaluated to false, if <code>index</code> is greater than the list <code>count</code>, or if buffer reallocation failed.</li>
+</ol>
+<h2 id='_pop_if'><a href="#list_function_index"><span id="list_pop_if"> _pop_if() </span></a></h2>
+<p>Removes an element from a given index if the condition evaluates to true.</p>
+<h4 id='declaration-42'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_if(SNAME *_list_, size_t index, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-42'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t index</code> - The index of the element to be removed.
+
+<ul>
+<li>Can&#39;t be greater than or equal to the list <code>count</code>.</li>
+</ul></li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-34'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the list.</li>
+<li><code>false</code> - If the condition evaluated to false, if the list is empty, or if the index is greater than or equal to the list <code>count</code>.</li>
+</ol>
+<h2 id='_prepend'><a href="#list_function_index"><span id="list_prepend"> _prepend() </span></a></h2>
+<p>Adds to the front of the list an array of elements with a given size.</p>
+<h4 id='declaration-43'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_prepend(SNAME *_list_, V *elements, size_t size);</code></p>
+</blockquote>
+<h4 id='parameters-43'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V *elements</code> - Array of elements to be added.</li>
+<li><code>size_t size</code> - The size of the array of elements.</li>
+</ol>
+<h4 id='returns-35'>Returns</h4>
+<ol>
+<li><code>true</code> - If the elements were successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed, or if <code>size</code> parameter equals <code>0</code>.</li>
+</ol>
+<h2 id='_insert'><a href="#list_function_index"><span id="list_insert"> _insert() </span></a></h2>
+<p>Adds to the specified list an array of elements with a given size to a specific index. The first element of the array of elements will be positioned at that index.</p>
+<h4 id='declaration-44'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_insert(SNAME *_list_, V *elements, size_t size, size_t index);</code></p>
+</blockquote>
+<h4 id='parameters-44'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V *elements</code> - Array of elements to be added.</li>
+<li><code>size_t size</code> - The size of the array of elements.</li>
+<li><code>size_t index</code> - Where the array of elements are to be inserted.</li>
+</ol>
+<h4 id='returns-36'>Returns</h4>
+<ol>
+<li><code>true</code> - If the elements were successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed, if <code>size</code> parameter equals <code>0</code>, or if the index is greater than <code>count</code>.</li>
+</ol>
+<h2 id='_append'><a href="#list_function_index"><span id="list_append"> _append() </span></a></h2>
+<p>Adds to the back of the list an array of elements with a given size.</p>
+<h4 id='declaration-45'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_append(SNAME *_list_, V *elements, size_t size);</code></p>
+</blockquote>
+<h4 id='parameters-45'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V *elements</code> - Array of elements to be added.</li>
+<li><code>size_t size</code> - The size of the array of elements.</li>
+</ol>
+<h4 id='returns-37'>Returns</h4>
+<ol>
+<li><code>true</code> - If the elements were successfully added to the list.</li>
+<li><code>false</code> - If buffer reallocation failed, or if <code>size</code> parameter equals <code>0</code>.</li>
+</ol>
+<h2 id='_remove'><a href="#list_function_index"><span id="list_remove"> _remove() </span></a></h2>
+<p>Removes a range of elements starting at <code>from</code> up to <code>to</code>. Both indexes are inclusive.</p>
+<h4 id='declaration-46'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_remove(SNAME *_list_, size_t from, size_t to);</code></p>
+</blockquote>
+<h4 id='parameters-46'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t from</code> - Location of the first element.</li>
+<li><code>size_t to</code> - Location of the last element.</li>
+</ol>
+<h4 id='returns-38'>Returns</h4>
+<ol>
+<li><code>true</code> - If the elements were successfully removed from the list.</li>
+<li><code>false</code> - If <code>from</code> is greater than <code>to</code>, or if <code>to</code> is greater than or equal to <code>count</code>.</li>
+</ol>
+<h2 id='_extract'><a href="#list_function_index"><span id="list_extract"> _extract() </span></a></h2>
+<p>Removes a range of elements starting at <code>from</code> up to <code>to</code> and returns a new list containing the removed elements. Both indexes are inclusive.</p>
+<h4 id='declaration-47'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_extract(SNAME *_list_, size_t from, size_t to);</code></p>
+</blockquote>
+<h4 id='parameters-47'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t from</code> - Location of the first element.</li>
+<li><code>size_t to</code> - Location of the last element.</li>
+</ol>
+<h4 id='returns-39'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A new heap allocated list containing the removed elements.</li>
+<li><code>NULL</code> - If <code>from</code> is greater than <code>to</code>, or if <code>to</code> is greater than or equal to <code>count</code>.</li>
+</ol>
+<h2 id='_front-2'><a href="#list_function_index"><span id="list_front"> _front() </span></a></h2>
+<p>Returns the first element (located at index <code>0</code>) if the list is not empty.</p>
+<h4 id='declaration-48'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_front(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-48'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-40'>Returns</h4>
+<ol>
+<li><code>V</code> - The first element in the list.</li>
+<li><code>0</code> or <code>NULL</code> - If the list is empty.</li>
+</ol>
+<h2 id='_get'><a href="#list_function_index"><span id="list_get"> _get() </span></a></h2>
+<p>Returns the element located at the given index if the list is not empty.</p>
+<h4 id='declaration-49'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_get(SNAME *_list_, size_t index);</code></p>
+</blockquote>
+<h4 id='parameters-49'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t index</code> - Index to retrieve an element.
+
+<ul>
+<li>Can&#39;t be greater than or equal to the list <code>count</code>.</li>
+</ul></li>
+</ol>
+<h4 id='returns-41'>Returns</h4>
+<ol>
+<li><code>V</code> - The element in the list located at the given index.</li>
+<li><code>0</code> or <code>NULL</code> - If the list is empty, or if <code>index</code> is greater than or equal to the list <code>count</code>.</li>
+</ol>
+<h2 id='_get_ref'><a href="#list_function_index"><span id="list_get_ref"> _get_ref() </span></a></h2>
+<p>Returns a reference to the element located at the given index if the list is not empty.</p>
+<h4 id='declaration-50'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V *PFX##_get_ref(SNAME *_list_, size_t index);</code></p>
+</blockquote>
+<h4 id='parameters-50'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t index</code> - Index to retrieve a reference to an element.
+
+<ul>
+<li>Can&#39;t be greater than or equal to the list <code>count</code>.</li>
+</ul></li>
+</ol>
+<h4 id='returns-42'>Returns</h4>
+<ol>
+<li><code>V *</code> - A reference to the element in the list located at the given index.</li>
+<li><code>NULL</code> - If the list is empty, or if <code>index</code> is greater than or equal to the list <code>count</code>.</li>
+</ol>
+<h2 id='_back-2'><a href="#list_function_index"><span id="list_back"> _back() </span></a></h2>
+<p>Returns the last element (located at index <code>count - 1</code>) if the list is not empty.</p>
+<h4 id='declaration-51'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_back(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-51'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-43'>Returns</h4>
+<ol>
+<li><code>V</code> - The last element in the list.</li>
+<li><code>0</code> or <code>NULL</code> - If the list is empty.</li>
+</ol>
+<h2 id='_indexof'><a href="#list_function_index"><span id="list_indexof"> _indexof() </span></a></h2>
+<p>Returns the index at which a given element can be found in the list. Use a comparison function that returns <code>0</code> when the element in the list equals the one passed in by argument. Use the flag <code>from_start</code> as <code>true</code> if you want to find the index of the first matching element or <code>false</code> if you want to find the last index of a matching element. Returns <code>count</code> if the element is not present in the list.</p>
+<h4 id='declaration-52'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_indexof(SNAME *_list_, V element, int (*comparator)(V, V), bool from_start);</code></p>
+</blockquote>
+<h4 id='parameters-52'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to be located in the list.</li>
+<li><code>int (*comparator)(V, V)</code> - Comparison function. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+<li><code>bool from_start</code> - Flag that when true, the function will search for the first occurrence of the given element and when false, will search for the last occurrence.</li>
+</ol>
+<h4 id='returns-44'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The index of the given element according to <code>comparator</code> or returns <code>count</code> if the element is not present in the given list.</li>
+</ol>
+<h2 id='_contains-2'><a href="#list_function_index"><span id="list_contains"> _contains() </span></a></h2>
+<p>Check if an element is present in the list according to a <code>comparator</code> function.</p>
+<h4 id='declaration-53'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_contains(SNAME *_list_, V element, int (*comparator)(V, V));</code></p>
+</blockquote>
+<h4 id='parameters-53'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>V element</code> - Element to check its presence in the list.</li>
+<li><code>int (*comparator)(V, V)</code> - Comparison function. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ol>
+<h4 id='returns-45'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element is present in the list.</li>
+<li><code>false</code> - If the element is not present in the list.</li>
+</ol>
+<h2 id='_empty-2'><a href="#list_function_index"><span id="list_empty"> _empty() </span></a></h2>
+<p>Returns true if the list is empty, otherwise false.</p>
+<h4 id='declaration-54'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_empty(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-54'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-46'>Returns</h4>
+<ol>
+<li><code>true</code> - If the list is empty.</li>
+<li><code>false</code> - If there is at least one element in the list.</li>
+</ol>
+<h2 id='_full-2'><a href="#list_function_index"><span id="list_full"> _full() </span></a></h2>
+<p>Returns true if the list is full, otherwise false. The list is considered full when its internal buffer is filled up, so the next element added to the list will required a resizing of the buffer, but note that the list can grow indefinitely.</p>
+<h4 id='declaration-55'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_full(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-55'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-47'>Returns</h4>
+<ol>
+<li><code>true</code> - If the list internal buffer is full.</li>
+<li><code>false</code> - If the list internal buffer is not full.</li>
+</ol>
+<h2 id='_count-2'><a href="#list_function_index"><span id="list_count"> _count() </span></a></h2>
+<p>Returns the amount of elements in the list.</p>
+<h4 id='declaration-56'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_count(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-56'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-48'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The amount of elements in the list.</li>
+</ol>
+<h2 id='_fits'><a href="#list_function_index"><span id="list_fits"> _fits() </span></a></h2>
+<p>Returns true if a given size fits into the list internal buffer without triggering it to be reallocated.</p>
+<h4 id='declaration-57'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_fits(SNAME *_list_, size_t size);</code></p>
+</blockquote>
+<h4 id='parameters-57'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+<li><code>size_t size</code> - Size of anything.</li>
+</ol>
+<h4 id='returns-49'>Returns</h4>
+<ol>
+<li><code>true</code> - If the given size fits into the internal buffer of the list.</li>
+<li><code>false</code> - If the given size doesn&#39;t fit into the internal buffer of the list.</li>
+</ol>
+<h2 id='_capacity-2'><a href="#list_function_index"><span id="list_capacity"> _capacity() </span></a></h2>
+<p>Returns the internal buffer&#39;s current capacity.</p>
+<h4 id='declaration-58'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_capacity(SNAME *_list_);</code></p>
+</blockquote>
+<h4 id='parameters-58'>Parameters</h4>
+<ol>
+<li><code>SNAME *_list_</code> - Target list.</li>
+</ol>
+<h4 id='returns-50'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The internal buffer&#39;s current capacity.</li>
+</ol>
+<h2 id='_iter_new-2'><a href="#list_function_index"><span id="list_iter_new"> _iter_new() </span></a></h2>
+<p>Creates a new iterator allocated on the heap and initializes it with a target list. The iterator&#39;s cursor will be positioned at the beginning of the list.</p>
+<h4 id='declaration-59'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME##_iter *PFX##_iter_new(SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-59'>Parameters</h4>
+<ol>
+<li><code>SNAME *target</code> - Target list.</li>
+</ol>
+<h4 id='returns-51'>Returns</h4>
+<ol>
+<li><code>SNAME##_iter *</code> - A heap allocated list iterator.</li>
+</ol>
+<h2 id='_iter_free-2'><a href="#list_function_index"><span id="list_iter_free"> _iter_free() </span></a></h2>
+<p>Frees a heap allocated list iterator from memory.</p>
+<h4 id='declaration-60'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_free(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-60'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be freed from memory.</li>
+</ol>
+<h2 id='_iter_init-2'><a href="#list_function_index"><span id="list_iter_init"> _iter_init() </span></a></h2>
+<p>Initializes an iterator with a given target list. The iterator&#39;s cursor will be positioned at the beginning of the list. The iterator must have been allocated already. This function simply initializes the structure.</p>
+<h4 id='declaration-61'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_init(SNAME##_iter *iter, SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-61'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be initialized.</li>
+<li><code>SNAME *target</code> - Target list.</li>
+</ol>
+<h2 id='_iter_start-2'><a href="#list_function_index"><span id="list_iter_start"> _iter_start() </span></a></h2>
+<p>Returns true if the iterator has reached the start of the list. If false, the iterator is still possible to iterate to a previous element.</p>
+<h4 id='declaration-62'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-62'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-52'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the start of the list.</li>
+<li><code>false</code> - If the iterator has not reached the start of the list.</li>
+</ol>
+<h2 id='_iter_end-2'><a href="#list_function_index"><span id="list_iter_end"> _iter_end() </span></a></h2>
+<p>Returns true if the iterator has reached the end of the list. If false, the iterator is still possible to iterate to a next element.</p>
+<h4 id='declaration-63'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-63'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-53'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the end of the list.</li>
+<li><code>false</code> - If the iterator has not reached the end of the list.</li>
+</ol>
+<h2 id='_iter_to_start-2'><a href="#list_function_index"><span id="list_iter_to_start"> _iter_to_start() </span></a></h2>
+<p>Moves the cursor of the target iterator to the start of the list.</p>
+<h4 id='declaration-64'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-64'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_to_end-2'><a href="#list_function_index"><span id="list_iter_to_end"> _iter_to_end() </span></a></h2>
+<p>Moves the cursor of the target iterator to the end of the list.</p>
+<h4 id='declaration-65'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-65'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_next-2'><a href="#list_function_index"><span id="list_iter_next"> _iter_next() </span></a></h2>
+<p>Moves the target list iterator to the next element if possible.</p>
+<h4 id='declaration-66'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_next(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-66'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-54'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the next element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the next element, hence reaching the end of the iteration.</li>
+</ol>
+<h2 id='_iter_prev-2'><a href="#list_function_index"><span id="list_iter_prev"> _iter_prev() </span></a></h2>
+<p>Moves the target list iterator to the previous element if possible.</p>
+<h4 id='declaration-67'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_prev(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-67'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-55'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the previous element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the previous element, hence reaching the start of the iteration.</li>
+</ol>
+<h2 id='_iter_value-2'><a href="#list_function_index"><span id="list_iter_value"> _iter_value() </span></a></h2>
+<p>Returns the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-68'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_iter_value(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-68'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-56'>Returns</h4>
+<ol>
+<li><code>V</code> - The element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-9'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_rvalue-2'><a href="#list_function_index"><span id="list_iter_rvalue"> _iter_rvalue() </span></a></h2>
+<p>Returns a reference to the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-69'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V *PFX##_iter_rvalue(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-69'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-57'>Returns</h4>
+<ol>
+<li><code>V *</code> - A reference to the element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-10'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_index-2'><a href="#list_function_index"><span id="list_iter_index"> _iter_index() </span></a></h2>
+<p>Returns the current position of the iterator relative to all the elements in the iteration. The index is <code>0</code> based and goes up to <code>count - 1</code>.</p>
+<h4 id='declaration-70'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_iter_index(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-70'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-58'>Returns</h4>
+<ol>
+<li><code>size_t</code> - Current position of the iterator relative to all elements in the iteration.</li>
+</ol>
+<h4 id='undefined-behavior-11'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized.</li>
+</ul>
+<h1 id='queue'><a href="#collections_index">Queue</a></h1>
+<p>A queue is a First-In First-out (or Last-in Last-out) data structure. It is a Dynamic Circular Array where elements are added from one end of the array and removed from the other end. The circular array here (also known as circular buffer or ring buffer) is very important so that both adding and removing elements from the queue are done instantly. The array is linear but with the modulo operator it is treated as a circular sequence of elements.</p>
+
+<p>If the queue was implemented as a regular Dynamic Array, when adding or removing an element at the front, it would be necessary to shift all elements currently present in the queue and this would add up a lot of computing time. Shifting <code>100000</code> elements in memory by one position every time an element is added to the queue is simply not efficient.</p>
+
+<p>The queue has two ends. The <code>front</code> and <code>back</code>. In this implementation all elements are added to the back of the queue and removed from the front, which is more or less how queues work in real life. Unlike a Stack that only has operations at one end of the buffer, the queue needs to be implemented as a circular array in order to quickly add or remove elements.</p>
+
+<p>The queue has three main functions: <code>enqueue</code> which adds an element to the queue; <code>dequeue</code> which removes an element from the queue; and <code>peek</code> which return the element at the front of the queue, that is, the next element to be removed from it.</p>
+
+<p>The queue is used in many applications where a resource is shared among multiple consumers and the queue is responsible for scheduling the access to the resource.</p>
+<h3 id='generation-macro-3'>Generation Macro</h3>
+<ul>
+<li><code>QUEUE_GENERATE(PFX, SNAME, FMOD, V)</code>
+
+<ul>
+<li><code>PFX</code> - Functions namespace or prefix.</li>
+<li><code>SNAME</code> - Structure name.</li>
+<li><code>FMOD</code> - Function modifier (static or empty).</li>
+<li><code>V</code> - Element type.</li>
+</ul></li>
+</ul>
+<h3 id='defined-structures-3'>Defined Structures</h3>
+<ul>
+<li><p><code>struct SNAME##_s</code> - Structure Name (represents a queue structure)</p>
+
+<ul>
+<li><code>V *buffer</code> - Internal storage.</li>
+<li><code>size_t capacity</code> - Storage capacity.</li>
+<li><code>size_t count</code> - Total elements in the queue.</li>
+<li><code>size_t front</code> - Front element index.</li>
+<li><code>size_t rear</code> - Rear element index.</li>
+<li><code>it_start</code> - Function that returns an iterator to the start of the queue.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_start)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+<li><code>it_end</code> - Function that returns an iterator to the end of the queue.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_end)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_iter_s</code> - Structure Iterator (represents a queue iterator)</p>
+
+<ul>
+<li><code>struct SNAME##_s *target</code> - Queue being iterated over.</li>
+<li><code>size_t cursor</code> - Index pointing to the next or previous element in the iteration.</li>
+<li><code>size_t index</code> - Relative index to all elements in the iteration.</li>
+<li><code>bool start</code> - If the iterator reached the start of the queue.</li>
+<li><code>bool end</code> - If the iterator reached the end of the queue.</li>
+</ul></li>
+</ul>
+<h3 id='typedefs-3'>Typedefs</h3>
+<ul>
+<li><code>typedef struct SNAME##_s SNAME</code></li>
+<li><code>typedef struct SNAME##_s *SNAME##_ptr</code></li>
+<li><code>typedef struct SNAME##_iter_s SNAME##_iter</code></li>
+<li><code>typedef struct SNAME##_iter_s *SNAME##_iter_ptr</code></li>
+</ul>
+<h3 id='defined-functions-3'><span id="queue_function_index"> Defined Functions </span></h3><h4 id='collection-allocation-and-deallocation-3'>Collection Allocation and Deallocation</h4>
+<ul>
+<li><a href="#queue_new">_new()</a></li>
+<li><a href="#queue_clear">_clear()</a></li>
+<li><a href="#queue_free">_free()</a></li>
+</ul>
+<h4 id='input-and-output-3'>Input and Output</h4>
+<ul>
+<li><a href="#queue_enqueue">_enqueue()</a></li>
+<li><a href="#queue_dequeue">_dequeue()</a></li>
+<li><a href="#queue_enqueue_if">_enqueue_if()</a></li>
+<li><a href="#queue_dequeue_if">_dequeue_if()</a></li>
+</ul>
+<h4 id='elements-access-3'>Elements Access</h4>
+<ul>
+<li><a href="#queue_peek">_peek()</a></li>
+</ul>
+<h4 id='collection-state-3'>Collection State</h4>
+<ul>
+<li><a href="#queue_contains">_contains()</a></li>
+<li><a href="#queue_empty">_empty()</a></li>
+<li><a href="#queue_full">_full()</a></li>
+<li><a href="#queue_count">_count()</a></li>
+<li><a href="#queue_capacity">_capacity()</a></li>
+</ul>
+<h4 id='iterator-allocation-and-deallocation-3'>Iterator Allocation and Deallocation</h4>
+<ul>
+<li><a href="#queue_iter_new">_iter_new()</a></li>
+<li><a href="#queue_iter_free">_iter_free()</a></li>
+</ul>
+<h4 id='iterator-initialization-3'>Iterator Initialization</h4>
+<ul>
+<li><a href="#queue_iter_init">_iter_init()</a></li>
+</ul>
+<h4 id='iterator-state-3'>Iterator State</h4>
+<ul>
+<li><a href="#queue_iter_start">_iter_start()</a></li>
+<li><a href="#queue_iter_end">_iter_end()</a></li>
+</ul>
+<h4 id='iterator-movement-3'>Iterator Movement</h4>
+<ul>
+<li><a href="#queue_iter_to_start">_iter_to_start()</a></li>
+<li><a href="#queue_iter_to_end">_iter_to_end()</a></li>
+<li><a href="#queue_iter_next">_iter_next()</a></li>
+<li><a href="#queue_iter_prev">_iter_prev()</a></li>
+</ul>
+<h4 id='iterator-access-3'>Iterator Access</h4>
+<ul>
+<li><a href="#queue_iter_value">_iter_value()</a></li>
+<li><a href="#queue_iter_rvalue">_iter_rvalue()</a></li>
+<li><a href="#queue_iter_index">_iter_index()</a></li>
+</ul>
+<h2 id='_new-3'><a href="#queue_function_index"><span id="queue_new"> _new() </span></a></h2>
+<p>Allocates and returns a new queue with an internal capacity of the specified value. If allocation fails, <code>NULL</code> is returned.</p>
+<h4 id='declaration-71'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new(size_t capacity);</code></p>
+</blockquote>
+<h4 id='parameters-71'>Parameters</h4>
+<ol>
+<li><code>size_t capacity</code> - The initial capacity for the queue.</li>
+</ol>
+<h4 id='returns-59'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated queue.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_clear-3'><a href="#queue_function_index"><span id="queue_clear"> _clear() </span></a></h2>
+<p>Removes all elements in the queue but does not frees the queue structure.</p>
+<h4 id='declaration-72'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_clear(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-72'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue to be cleared.</li>
+</ol>
+<h2 id='_free-3'><a href="#queue_function_index"><span id="queue_free"> _free() </span></a></h2>
+<p>Frees from memory the queue internal buffer and the structure itself. Note that if the elements inside the queue are pointers to allocated memory, this function might cause memory leaks as it does not deals with its elements.</p>
+<h4 id='declaration-73'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_free(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-73'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue to be freed from memory.</li>
+</ol>
+<h2 id='_enqueue'><a href="#queue_function_index"><span id="queue_enqueue"> _enqueue() </span></a></h2>
+<p>Adds an element to the rear of the queue.</p>
+<h4 id='declaration-74'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_enqueue(SNAME *_queue_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-74'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-60'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the rear of the queue.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h2 id='_dequeue'><a href="#queue_function_index"><span id="queue_dequeue"> _dequeue() </span></a></h2>
+<p>Removes an element at the front of the queue.</p>
+<h4 id='declaration-75'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_dequeue(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-75'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-61'>Returns</h4>
+<ol>
+<li><code>true</code> - If the front element was successfully removed from the queue.</li>
+<li><code>false</code> - If the queue is empty.</li>
+</ol>
+<h2 id='_enqueue_if'><a href="#queue_function_index"><span id="queue_enqueue_if"> _enqueue_if() </span></a></h2>
+<p>Adds an element to the rear of the queue if the condition evaluates to true.</p>
+<h4 id='declaration-76'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_enqueue_if(SNAME *_queue_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-76'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-62'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the rear of the queue.</li>
+<li><code>false</code> - If the condition evaluated to false, or if buffer reallocation failed.</li>
+</ol>
+<h2 id='_dequeue_if'><a href="#queue_function_index"><span id="queue_dequeue_if"> _dequeue_if() </span></a></h2>
+<p>Removes an element at the front of the queue if the condition evaluates to true.</p>
+<h4 id='declaration-77'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_dequeue_if(SNAME *_queue_, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-77'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-63'>Returns</h4>
+<ol>
+<li><code>true</code> - If the front element was successfully removed from the queue.</li>
+<li><code>false</code> - If the condition evaluated to false, or if the queue is empty.</li>
+</ol>
+<h2 id='_peek'><a href="#queue_function_index"><span id="queue_peek"> _peek() </span></a></h2>
+<p>Returns the element at the front of the queue if available. This represents the next element to be removed from the queue.</p>
+<h4 id='declaration-78'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_peek(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-78'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-64'>Returns</h4>
+<ol>
+<li><code>V</code> - The element at the front of the queue.</li>
+<li><code>0</code> or <code>NULL</code> - If the queue is empty.</li>
+</ol>
+<h2 id='_contains-3'><a href="#queue_function_index"><span id="queue_contains"> _contains() </span></a></h2>
+<p>Check if an element is present in the queue according to a <code>comparator</code> function.</p>
+<h4 id='declaration-79'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_contains(SNAME *_queue_, V element, int (*comparator)(V, V));</code></p>
+</blockquote>
+<h4 id='parameters-79'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+<li><code>V element</code> - Element to check its presence in the queue.</li>
+<li><code>int (*comparator)(V, V)</code> - Comparison function. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ol>
+<h4 id='returns-65'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element is present in the queue.</li>
+<li><code>false</code> - If the element is not present in the queue.</li>
+</ol>
+<h2 id='_empty-3'><a href="#queue_function_index"><span id="queue_empty"> _empty() </span></a></h2>
+<p>Returns true if the queue is empty, otherwise false.</p>
+<h4 id='declaration-80'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_empty(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-80'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-66'>Returns</h4>
+<ol>
+<li><code>true</code> - If the queue is empty.</li>
+<li><code>false</code> - If there is at least one element in the queue.</li>
+</ol>
+<h2 id='_full-3'><a href="#queue_function_index"><span id="queue_full"> _full() </span></a></h2>
+<p>Returns true if the queue is full, otherwise false. The queue is considered full when its internal buffer is filled up, so the next element added to the queue will required a resizing of the buffer, but note that the queue can grow indefinitely.</p>
+<h4 id='declaration-81'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_full(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-81'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-67'>Returns</h4>
+<ol>
+<li><code>true</code> - If the queue internal buffer is full.</li>
+<li><code>false</code> - If the queue internal buffer is not full.</li>
+</ol>
+<h2 id='_count-3'><a href="#queue_function_index"><span id="queue_count"> _count() </span></a></h2>
+<p>Returns the amount of elements in the queue.</p>
+<h4 id='declaration-82'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_count(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-82'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-68'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The amount of elements in the queue.</li>
+</ol>
+<h2 id='_capacity-3'><a href="#queue_function_index"><span id="queue_capacity"> _capacity() </span></a></h2>
+<p>Returns the internal buffer&#39;s current capacity.</p>
+<h4 id='declaration-83'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_capacity(SNAME *_queue_);</code></p>
+</blockquote>
+<h4 id='parameters-83'>Parameters</h4>
+<ol>
+<li><code>SNAME *_queue_</code> - Target queue.</li>
+</ol>
+<h4 id='returns-69'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The internal buffer&#39;s current capacity.</li>
+</ol>
+<h2 id='_iter_new-3'><a href="#queue_function_index"><span id="queue_iter_new"> _iter_new() </span></a></h2>
+<p>Creates a new iterator allocated on the heap and initializes it with a target queue.</p>
+<h4 id='declaration-84'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME##_iter *PFX##_iter_new(SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-84'>Parameters</h4>
+<ol>
+<li><code>SNAME *target</code> - Target queue.</li>
+</ol>
+<h4 id='returns-70'>Returns</h4>
+<ol>
+<li><code>SNAME##_iter *</code> - A heap allocated queue iterator.</li>
+</ol>
+<h2 id='_iter_free-3'><a href="#queue_function_index"><span id="queue_iter_free"> _iter_free() </span></a></h2>
+<p>Frees a heap allocated queue iterator from memory.</p>
+<h4 id='declaration-85'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_free(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-85'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be freed from memory.</li>
+</ol>
+<h2 id='_iter_init-3'><a href="#queue_function_index"><span id="queue_iter_init"> _iter_init() </span></a></h2>
+<p>Initializes an iterator with a given target queue. The iterator&#39;s cursor will be positioned at the front of the queue. The iterator must have been allocated already. This function simply initializes the structure.</p>
+<h4 id='declaration-86'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_init(SNAME##_iter *iter, SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-86'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be initialized.</li>
+<li><code>SNAME *target</code> - Target queue.</li>
+</ol>
+<h2 id='_iter_start-3'><a href="#queue_function_index"><span id="queue_iter_start"> _iter_start() </span></a></h2>
+<p>Returns true if the iterator has reached the start (front element) of the queue. If false, the iterator is still possible to iterate to a previous element.</p>
+<h4 id='declaration-87'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-87'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-71'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the start of the queue.</li>
+<li><code>false</code> - If the iterator has not reached the start of the queue.</li>
+</ol>
+<h2 id='_iter_end-3'><a href="#queue_function_index"><span id="queue_iter_end"> _iter_end() </span></a></h2>
+<p>Returns true if the iterator has reached the end (rear element) of the queue. If false, the iterator is still possible to iterate to a next element.</p>
+<h4 id='declaration-88'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-88'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-72'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the end of the queue.</li>
+<li><code>false</code> - If the iterator has not reached the end of the queue.</li>
+</ol>
+<h2 id='_iter_to_start-3'><a href="#queue_function_index"><span id="queue_iter_to_start"> _iter_to_start() </span></a></h2>
+<p>Moves the cursor of the target iterator to the start (front element) of the queue.</p>
+<h4 id='declaration-89'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-89'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_to_end-3'><a href="#queue_function_index"><span id="queue_iter_to_end"> _iter_to_end() </span></a></h2>
+<p>Moves the cursor of the target iterator to the end (rear element) of the queue.</p>
+<h4 id='declaration-90'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-90'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_next-3'><a href="#queue_function_index"><span id="queue_iter_next"> _iter_next() </span></a></h2>
+<p>Moves the target queue iterator to the next element if possible.</p>
+<h4 id='declaration-91'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_next(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-91'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-73'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the next element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the next element, hence reaching the end of the iteration.</li>
+</ol>
+<h2 id='_iter_prev-3'><a href="#queue_function_index"><span id="queue_iter_prev"> _iter_prev() </span></a></h2>
+<p>Moves the target queue iterator to the previous element if possible.</p>
+<h4 id='declaration-92'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_prev(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-92'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-74'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the previous element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the previous element, hence reaching the start of the iteration.</li>
+</ol>
+<h2 id='_iter_value-3'><a href="#queue_function_index"><span id="queue_iter_value"> _iter_value() </span></a></h2>
+<p>Returns the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-93'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_iter_value(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-93'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-75'>Returns</h4>
+<ol>
+<li><code>V</code> - The element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-12'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_rvalue-3'><a href="#queue_function_index"><span id="queue_iter_rvalue"> _iter_rvalue() </span></a></h2>
+<p>Returns a reference to the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-94'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V *PFX##_iter_rvalue(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-94'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-76'>Returns</h4>
+<ol>
+<li><code>V *</code> - A reference to the element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-13'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_index-3'><a href="#queue_function_index"><span id="queue_iter_index"> _iter_index() </span></a></h2>
+<p>Returns the current position of the iterator relative to all the elements in the iteration. The index is <code>0</code> based and goes up to <code>count - 1</code>.</p>
+<h4 id='declaration-95'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_iter_index(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-95'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-77'>Returns</h4>
+<ol>
+<li><code>size_t</code> - Current position of the iterator relative to all elements in the iteration.</li>
+</ol>
+<h4 id='undefined-behavior-14'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized.</li>
+</ul>
+<h1 id='stack'><a href="#collections_index">Stack</a></h1>
+<p>A Stack is a Last-in First-out (or First-in Last-out) data structure used in a variety of algorithms. It is a Dynamic Array that can only add or remove its elements at the end of the buffer, in this case, it represents the top of the stack.</p>
+
+<p>It has three main functions: <code>push</code> which adds an element at the top of the stack; <code>pop</code> which removes the top element from the stack; and <code>top</code> which returns the top element without removing it (it is also sometimes called <code>peek</code>).</p>
+
+<p>A Stack is used in algorithms like backtracking, depth-first search, expression evaluation, syntax parsing and many more.</p>
+<h3 id='generation-macro-4'>Generation Macro</h3>
+<ul>
+<li><code>STACK_GENERATE(PFX, SNAME, FMOD, V)</code>
+
+<ul>
+<li><code>PFX</code> - Functions namespace or prefix.</li>
+<li><code>SNAME</code> - Structure name.</li>
+<li><code>FMOD</code> - Function modifier (static or empty).</li>
+<li><code>V</code> - Element type.</li>
+</ul></li>
+</ul>
+<h3 id='defined-structures-4'>Defined Structures</h3>
+<ul>
+<li><p><code>struct SNAME##_s</code> - Structure Name (represents a stack structure)</p>
+
+<ul>
+<li><code>V *buffer</code> - Internal storage.</li>
+<li><code>size_t capacity</code> - Storage capacity.</li>
+<li><code>size_t count</code> - Total elements in the stack.</li>
+<li><code>it_start</code> - Function that returns an iterator to the start of the stack.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_start)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+<li><code>it_end</code> - Function that returns an iterator to the end of the stack.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_end)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_iter_s</code> - Structure Iterator (represents a stack iterator)</p>
+
+<ul>
+<li><code>struct SNAME##_s *target</code> - Stack being iterated over.</li>
+<li><code>size_t cursor</code> - Index pointing to the next or previous element in the iteration.</li>
+<li><code>bool start</code> - If the iterator reached the start of the stack.</li>
+<li><code>bool end</code> - If the iterator reached the end of the stack.</li>
+</ul></li>
+</ul>
+<h3 id='typedefs-4'>Typedefs</h3>
+<ul>
+<li><code>typedef struct SNAME##_s SNAME</code></li>
+<li><code>typedef struct SNAME##_s *SNAME##_ptr</code></li>
+<li><code>typedef struct SNAME##_iter_s SNAME##_iter</code></li>
+<li><code>typedef struct SNAME##_iter_s *SNAME##_iter_ptr</code></li>
+</ul>
+<h3 id='defined-functions-4'><span id="stack_function_index"> Defined Functions </span></h3><h4 id='collection-allocation-and-deallocation-4'>Collection Allocation and Deallocation</h4>
+<ul>
+<li><a href="#stack_new">_new()</a></li>
+<li><a href="#stack_clear">_clear()</a></li>
+<li><a href="#stack_free">_free()</a></li>
+</ul>
+<h4 id='input-and-output-4'>Input and Output</h4>
+<ul>
+<li><a href="#stack_push">_push()</a></li>
+<li><a href="#stack_pop">_pop()</a></li>
+</ul>
+<h4 id='conditional-input-and-output-3'>Conditional Input and Output</h4>
+<ul>
+<li><a href="#stack_push_if">_push_if()</a></li>
+<li><a href="#stack_pop_if">_pop_if()</a></li>
+</ul>
+<h4 id='elements-access-4'>Elements Access</h4>
+<ul>
+<li><a href="#stack_top">_top()</a></li>
+</ul>
+<h4 id='collection-state-4'>Collection State</h4>
+<ul>
+<li><a href="#stack_contains">_contains()</a></li>
+<li><a href="#stack_empty">_empty()</a></li>
+<li><a href="#stack_full">_full()</a></li>
+<li><a href="#stack_count">_count()</a></li>
+<li><a href="#stack_capacity">_capacity()</a></li>
+</ul>
+<h4 id='iterator-allocation-and-deallocation-4'>Iterator Allocation and Deallocation</h4>
+<ul>
+<li><a href="#stack_iter_new">_iter_new()</a></li>
+<li><a href="#stack_iter_free">_iter_free()</a></li>
+</ul>
+<h4 id='iterator-initialization-4'>Iterator Initialization</h4>
+<ul>
+<li><a href="#stack_iter_init">_iter_init()</a></li>
+</ul>
+<h4 id='iterator-state-4'>Iterator State</h4>
+<ul>
+<li><a href="#stack_iter_start">_iter_start()</a></li>
+<li><a href="#stack_iter_end">_iter_end()</a></li>
+</ul>
+<h4 id='iterator-movement-4'>Iterator Movement</h4>
+<ul>
+<li><a href="#stack_iter_to_start">_iter_to_start()</a></li>
+<li><a href="#stack_iter_to_end">_iter_to_end()</a></li>
+<li><a href="#stack_iter_next">_iter_next()</a></li>
+<li><a href="#stack_iter_prev">_iter_prev()</a></li>
+</ul>
+<h4 id='iterator-access-4'>Iterator Access</h4>
+<ul>
+<li><a href="#stack_iter_value">_iter_value()</a></li>
+<li><a href="#stack_iter_rvalue">_iter_rvalue()</a></li>
+<li><a href="#stack_iter_index">_iter_index()</a></li>
+</ul>
+<h2 id='_new-4'><a href="#stack_function_index"><span id="stack_new"> _new() </span></a></h2>
+<p>Allocates and returns a new stack with an internal capacity of the specified value. If allocation fails, <code>NULL</code> is returned.</p>
+<h4 id='declaration-96'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new(size_t capacity);</code></p>
+</blockquote>
+<h4 id='parameters-96'>Parameters</h4>
+<ol>
+<li><code>size_t capacity</code> - The initial capacity for the stack.</li>
+</ol>
+<h4 id='returns-78'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated stack.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_clear-4'><a href="#stack_function_index"><span id="stack_clear"> _clear() </span></a></h2>
+<p>Removes all elements in the stack but does not frees the stack structure.</p>
+<h4 id='declaration-97'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_clear(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-97'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack to be cleared.</li>
+</ol>
+<h2 id='_free-4'><a href="#stack_function_index"><span id="stack_free"> _free() </span></a></h2>
+<p>Frees from memory the stack internal buffer and the structure itself. Note that if the elements inside the stack are pointers to allocated memory, this function might cause memory leaks as it does not deals with its elements.</p>
+<h4 id='declaration-98'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_free(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-98'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack to be freed from memory.</li>
+</ol>
+<h2 id='_push-2'><a href="#stack_function_index"><span id="stack_push"> _push() </span></a></h2>
+<p>Adds an element on top of the stack.</p>
+<h4 id='declaration-99'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push(SNAME *_stack_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-99'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+<li><code>V element</code> - Element to be added.</li>
+</ol>
+<h4 id='returns-79'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the stack.</li>
+<li><code>false</code> - If buffer reallocation failed.</li>
+</ol>
+<h2 id='_pop-2'><a href="#stack_function_index"><span id="stack_pop"> _pop() </span></a></h2>
+<p>Removes the top element from the stack.</p>
+<h4 id='declaration-100'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-100'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-80'>Returns</h4>
+<ol>
+<li><code>true</code> - If an element was successfully removed from the stack.</li>
+<li><code>false</code> - If the stack is empty.</li>
+</ol>
+<h2 id='_push_if-2'><a href="#stack_function_index"><span id="stack_push_if"> _push_if() </span></a></h2>
+<p>Adds an element on top of the stack if the condition evaluates to true.</p>
+<h4 id='declaration-101'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_push_if(SNAME *_stack_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-101'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+<li><code>V element</code> - Element to be added.</li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-81'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the stack.</li>
+<li><code>false</code> - If the condition evaluated to false, or if buffer reallocation failed.</li>
+</ol>
+<h2 id='_pop_if-2'><a href="#stack_function_index"><span id="stack_pop_if"> _pop_if() </span></a></h2>
+<p>Removes the top element from the stack if the condition evaluates to true.</p>
+<h4 id='declaration-102'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_pop_if(SNAME *_stack_, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-102'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-82'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the stack.</li>
+<li><code>false</code> - If the condition evaluated to false, or if the stack is empty.</li>
+</ol>
+<h2 id='_top'><a href="#stack_function_index"><span id="stack_top"> _top() </span></a></h2>
+<p>Returns the element at the top of the stack if available.</p>
+<h4 id='declaration-103'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_top(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-103'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-83'>Returns</h4>
+<ol>
+<li><code>V</code> - The element at the top of the stack.</li>
+<li><code>0</code> or <code>NULL</code> - If the stack is empty.</li>
+</ol>
+<h2 id='_contains-4'><a href="#stack_function_index"><span id="stack_contains"> _contains() </span></a></h2>
+<p>Check if an element is present in the stack according to a <code>comparator</code> function.</p>
+<h4 id='declaration-104'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_contains(SNAME *_stack_, V element, int (*comparator)(V, V));</code></p>
+</blockquote>
+<h4 id='parameters-104'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+<li><code>V element</code> - Element to check its presence in the stack.</li>
+<li><code>int (*comparator)(V, V)</code> - Comparison function. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ol>
+<h4 id='returns-84'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element is present in the stack.</li>
+<li><code>false</code> - If the element is not present in the stack.</li>
+</ol>
+<h2 id='_empty-4'><a href="#stack_function_index"><span id="stack_empty"> _empty() </span></a></h2>
+<p>Returns true if the stack is empty, otherwise false.</p>
+<h4 id='declaration-105'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_empty(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-105'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-85'>Returns</h4>
+<ol>
+<li><code>true</code> - If the stack is empty.</li>
+<li><code>false</code> - If there is at least one element in the stack.</li>
+</ol>
+<h2 id='_full-4'><a href="#stack_function_index"><span id="stack_full"> _full() </span></a></h2>
+<p>Returns true if the stack is full, otherwise false. The stack is considered full when its internal buffer is filled up, so the next element added to the stack will required a resizing of the buffer, but note that the stack can grow indefinitely.</p>
+<h4 id='declaration-106'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_full(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-106'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-86'>Returns</h4>
+<ol>
+<li><code>true</code> - If the stack internal buffer is full.</li>
+<li><code>false</code> - If the stack internal buffer is not full.</li>
+</ol>
+<h2 id='_count-4'><a href="#stack_function_index"><span id="stack_count"> _count() </span></a></h2>
+<p>Returns the amount of elements in the stack.</p>
+<h4 id='declaration-107'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_count(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-107'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-87'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The amount of elements in the stack.</li>
+</ol>
+<h2 id='_capacity-4'><a href="#stack_function_index"><span id="stack_capacity"> _capacity() </span></a></h2>
+<p>Returns the internal buffer&#39;s current capacity.</p>
+<h4 id='declaration-108'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_capacity(SNAME *_stack_);</code></p>
+</blockquote>
+<h4 id='parameters-108'>Parameters</h4>
+<ol>
+<li><code>SNAME *_stack_</code> - Target stack.</li>
+</ol>
+<h4 id='returns-88'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The internal buffer&#39;s current capacity.</li>
+</ol>
+<h2 id='_iter_new-4'><a href="#stack_function_index"><span id="stack_iter_new"> _iter_new() </span></a></h2>
+<p>Creates a new iterator allocated on the heap and initializes it with a target stack. The iterator&#39;s cursor will be positioned at the top of the stack.</p>
+<h4 id='declaration-109'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME##_iter *PFX##_iter_new(SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-109'>Parameters</h4>
+<ol>
+<li><code>SNAME *target</code> - Target stack.</li>
+</ol>
+<h4 id='returns-89'>Returns</h4>
+<ol>
+<li><code>SNAME##_iter *</code> - A heap allocated stack iterator.</li>
+</ol>
+<h2 id='_iter_free-4'><a href="#stack_function_index"><span id="stack_iter_free"> _iter_free() </span></a></h2>
+<p>Frees a heap allocated stack iterator from memory.</p>
+<h4 id='declaration-110'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_free(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-110'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be freed from memory.</li>
+</ol>
+<h2 id='_iter_init-4'><a href="#stack_function_index"><span id="stack_iter_init"> _iter_init() </span></a></h2>
+<p>Initializes an iterator with a given target stack. The iterator&#39;s cursor will be positioned at the top of the stack. The iterator must have been allocated already. This function simply initializes the structure.</p>
+<h4 id='declaration-111'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_init(SNAME##_iter *iter, SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-111'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be initialized.</li>
+<li><code>SNAME *target</code> - Target stack.</li>
+</ol>
+<h2 id='_iter_start-4'><a href="#stack_function_index"><span id="stack_iter_start"> _iter_start() </span></a></h2>
+<p>Returns true if the iterator has reached the start (top element) of the stack. If false, the iterator is still possible to iterate to a previous element.</p>
+<h4 id='declaration-112'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-112'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-90'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the start of the stack.</li>
+<li><code>false</code> - If the iterator has not reached the start of the stack.</li>
+</ol>
+<h2 id='_iter_end-4'><a href="#stack_function_index"><span id="stack_iter_end"> _iter_end() </span></a></h2>
+<p>Returns true if the iterator has reached the end (bottom element) of the stack. If false, the iterator is still possible to iterate to a next element.</p>
+<h4 id='declaration-113'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-113'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-91'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the end of the stack.</li>
+<li><code>false</code> - If the iterator has not reached the end of the stack.</li>
+</ol>
+<h2 id='_iter_to_start-4'><a href="#stack_function_index"><span id="stack_iter_to_start"> _iter_to_start() </span></a></h2>
+<p>Moves the cursor of the target iterator to the start (top element) of the stack.</p>
+<h4 id='declaration-114'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-114'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_to_end-4'><a href="#stack_function_index"><span id="stack_iter_to_end"> _iter_to_end() </span></a></h2>
+<p>Moves the cursor of the target iterator to the end (bottom element) of the stack.</p>
+<h4 id='declaration-115'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-115'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_next-4'><a href="#stack_function_index"><span id="stack_iter_next"> _iter_next() </span></a></h2>
+<p>Moves the target stack iterator to the next element if possible.</p>
+<h4 id='declaration-116'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_next(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-116'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-92'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the next element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the next element, hence reaching the end of the iteration.</li>
+</ol>
+<h2 id='_iter_prev-4'><a href="#stack_function_index"><span id="stack_iter_prev"> _iter_prev() </span></a></h2>
+<p>Moves the target stack iterator to the previous element if possible.</p>
+<h4 id='declaration-117'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_prev(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-117'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-93'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the previous element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the previous element, hence reaching the start of the iteration.</li>
+</ol>
+<h2 id='_iter_value-4'><a href="#stack_function_index"><span id="stack_iter_value"> _iter_value() </span></a></h2>
+<p>Returns the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-118'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_iter_value(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-118'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-94'>Returns</h4>
+<ol>
+<li><code>V</code> - The element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-15'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_rvalue-4'><a href="#stack_function_index"><span id="stack_iter_rvalue"> _iter_rvalue() </span></a></h2>
+<p>Returns a reference to the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-119'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V *PFX##_iter_rvalue(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-119'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-95'>Returns</h4>
+<ol>
+<li><code>V *</code> - A reference to the element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-16'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_index-4'><a href="#stack_function_index"><span id="stack_iter_index"> _iter_index() </span></a></h2>
+<p>Returns the current position of the iterator relative to all the elements in the iteration. The index is <code>0</code> based and goes up to <code>count - 1</code>.</p>
+<h4 id='declaration-120'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_iter_index(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-120'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-96'>Returns</h4>
+<ol>
+<li><code>size_t</code> - Current position of the iterator relative to all elements in the iteration.</li>
+</ol>
+<h4 id='undefined-behavior-17'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized.</li>
+</ul>
+<h1 id='treemap'><a href="#collections_index">TreeMap</a></h1>
+<p>A TreeMap is an associative container that maps a key <code>K</code> to a value <code>V</code> containing only unique keys. The value is only accessible through the key. The keys are also sorted, unlike a HashMap. The main advantage of this container is that its elements are sorted when using an iterator over the tree and this ordering is based on a comparator function that is passes when the structure is initialized.</p>
+
+<p>The TreeMap is implemented as an AVL tree in order to guarantee a worst case lookup of <code>O(log n)</code>.</p>
+<h1 id='treeset'><a href="#collections_index">TreeSet</a></h1>
+<p>A TreeSet is an ordered collection of unique elements implemented as a balanced binary tree. A binary tree is a data structure with a root node and each node has two children, often referred as <code>left</code> child and <code>right</code> child. It is a balanced tree in order to keep the height of the tree as low as possible. The height determines how fast it takes to look up for an element so there are balanced trees that when adding or removing a node from the tree will try, if needed, to balanced itself.</p>
+
+<p>The TreeSet is implemented as an AVL tree in order to guarantee a worst case lookup of <code>O(log n)</code>.</p>
+<h3 id='generation-macro-5'>Generation Macro</h3>
+<ul>
+<li><code>TREESET_GENERATE(PFX, SNAME, FMOD, V)</code>
+
+<ul>
+<li><code>PFX</code> - Functions namespace or prefix.</li>
+<li><code>SNAME</code> - Structure name.</li>
+<li><code>FMOD</code> - Function modifier (static or empty).</li>
+<li><code>V</code> - Element type.</li>
+</ul></li>
+</ul>
+<h3 id='defined-structures-5'>Defined Structures</h3>
+<ul>
+<li><p><code>struct SNAME##_s</code> - Structure Name (represents a tree-based set structure)</p>
+
+<ul>
+<li><code>struct SNAME##_node_s *root;</code> - Root node of the balanced binary tree.</li>
+<li><code>size_t count</code> - Total elements in the set.</li>
+<li><code>int (*cmp)(V, V)</code> - Comparator function used to sort elements. Returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_node_s</code> - AVL tree node.</p>
+
+<ul>
+<li><code>V key</code> - Node&#39;s element.</li>
+<li><code>unsigned char height</code> - Height of this node. Used to balance the tree.</li>
+<li><code>struct SNAME##_node_s *left</code> - Left subtree of this node.</li>
+<li><code>struct SNAME##_node_s *right</code> - Right subtree of this node.</li>
+<li><code>struct SNAME##_node_s *parent</code> - Parent node or <code>NULL</code> if this is the root node.</li>
+<li><code>it_start</code> - Function that returns an iterator to the start of the TreeSet.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_start)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+<li><code>it_end</code> - Function that returns an iterator to the end of the TreeSet.
+
+<ul>
+<li>Full definition: <code>struct SNAME##_iter_s (*it_end)(struct SNAME##_s *);</code>.</li>
+</ul></li>
+</ul></li>
+<li><p><code>struct SNAME##_iter_s</code> - Structure Iterator (represents a binary tree iterator)</p>
+
+<ul>
+<li><code>struct SNAME##_s *target</code> - TreeSet being iterated over.</li>
+<li><code>struct SNAME##_node_s *cursor</code> - Current AVL tree node.</li>
+<li><code>struct SNAME##_node_s *first</code> - Marks the first AVL tree node in the iteration.</li>
+<li><code>struct SNAME##_node_s *last</code> - Marks the last AVL tree node in the iteration.</li>
+<li><code>size_t index</code> - Relative index to all elements in the iteration.</li>
+<li><code>bool start</code> - If the iterator reached the start of the TreeSet.</li>
+<li><code>bool end</code> - If the iterator reached the end of the TreeSet.</li>
+</ul></li>
+</ul>
+<h3 id='typedefs-5'>Typedefs</h3>
+<ul>
+<li><code>typedef struct SNAME##_s SNAME</code></li>
+<li><code>typedef struct SNAME##_s *SNAME##_ptr</code></li>
+<li><code>typedef struct SNAME##_iter_s SNAME##_iter</code></li>
+<li><code>typedef struct SNAME##_iter_s *SNAME##_iter_ptr</code></li>
+</ul>
+<h3 id='defined-functions-5'><span id="treeset_function_index"> Defined Functions </span></h3><h4 id='collection-allocation-and-deallocation-5'>Collection Allocation and Deallocation</h4>
+<ul>
+<li><a href="#treeset_new">_new()</a></li>
+<li><a href="#treeset_clear">_clear()</a></li>
+<li><a href="#treeset_free">_free()</a></li>
+</ul>
+<h4 id='input-and-output-5'>Input and Output</h4>
+<ul>
+<li><a href="#treeset_insert">_insert()</a></li>
+<li><a href="#treeset_remove">_remove()</a></li>
+</ul>
+<h4 id='conditional-input-and-output-4'>Conditional Input and Output</h4>
+<ul>
+<li><a href="#treeset_insert_if">_insert_if()</a></li>
+<li><a href="#treeset_remove_if">_remove_if()</a></li>
+</ul>
+<h4 id='elements-access-5'>Elements Access</h4>
+<ul>
+<li><a href="#treeset_max">_max()</a></li>
+<li><a href="#treeset_min">_min()</a></li>
+</ul>
+<h4 id='collection-state-5'>Collection State</h4>
+<ul>
+<li><a href="#treeset_contains">_contains()</a></li>
+<li><a href="#treeset_empty">_empty()</a></li>
+<li><a href="#treeset_count">_count()</a></li>
+</ul>
+<h4 id='set-operations'>Set Operations</h4>
+<ul>
+<li><a href="#treeset_union">_union()</a></li>
+<li><a href="#treeset_intersection">_intersection()</a></li>
+<li><a href="#treeset_difference">_difference()</a></li>
+<li><a href="#treeset_symmetric_difference">_symmetric_difference()</a></li>
+</ul>
+<h4 id='iterator-allocation-and-deallocation-5'>Iterator Allocation and Deallocation</h4>
+<ul>
+<li><a href="#treeset_iter_new">_iter_new()</a></li>
+<li><a href="#treeset_iter_free">_iter_free()</a></li>
+</ul>
+<h4 id='iterator-initialization-5'>Iterator Initialization</h4>
+<ul>
+<li><a href="#treeset_iter_init">_iter_init()</a></li>
+</ul>
+<h4 id='iterator-state-5'>Iterator State</h4>
+<ul>
+<li><a href="#treeset_iter_start">_iter_start()</a></li>
+<li><a href="#treeset_iter_end">_iter_end()</a></li>
+</ul>
+<h4 id='iterator-movement-5'>Iterator Movement</h4>
+<ul>
+<li><a href="#treeset_iter_to_start">_iter_to_start()</a></li>
+<li><a href="#treeset_iter_to_end">_iter_to_end()</a></li>
+<li><a href="#treeset_iter_next">_iter_next()</a></li>
+<li><a href="#treeset_iter_prev">_iter_prev()</a></li>
+</ul>
+<h4 id='iterator-access-5'>Iterator Access</h4>
+<ul>
+<li><a href="#treeset_iter_value">_iter_value()</a></li>
+<li><a href="#treeset_iter_index">_iter_index()</a></li>
+</ul>
+<h2 id='_new-5'><a href="#treeset_function_index"><span id="treeset_new"> _new() </span></a></h2>
+<p>Allocates and returns a new TreeSet with a default comparator that will determine the order of the elements in the set.</p>
+<h4 id='declaration-121'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_new(int (*compare)(V, V));</code></p>
+</blockquote>
+<h4 id='parameters-121'>Parameters</h4>
+<ol>
+<li><code>int (*compare)(V, V)</code> - Comparator. Takes two arguments and returns:
+
+<ul>
+<li><code>-1</code> - When the first argument is less than the second;</li>
+<li><code>0</code> - When both arguments are equal;</li>
+<li><code>1</code> - When the first argument is greater than the second.</li>
+</ul></li>
+</ol>
+<h4 id='returns-97'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - A pointer to a heap allocated TreeSet.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_clear-5'><a href="#treeset_function_index"><span id="treeset_clear"> _clear() </span></a></h2>
+<p>Removes all elements in the TreeSet, freeing all of its nodes except for the TreeSet structure.</p>
+<h4 id='declaration-122'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_clear(SNAME *_set_);</code></p>
+</blockquote>
+<h4 id='parameters-122'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - TreeSet to be cleared.</li>
+</ol>
+<h2 id='_free-5'><a href="#treeset_function_index"><span id="treeset_free"> _free() </span></a></h2>
+<p>Frees from memory the TreeSet nodes and the structure itself. Note that if the elements inside the TreeSet are pointers to allocated memory, this function might cause memory leaks as it does not deals with its elements.</p>
+<h4 id='declaration-123'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_free(SNAME *_set_);</code></p>
+</blockquote>
+<h4 id='parameters-123'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - TreeSet to be freed from memory.</li>
+</ol>
+<h2 id='_insert-2'><a href="#treeset_function_index"><span id="treeset_insert"> _insert() </span></a></h2>
+<p>Inserts a new element to the set. The element is added only if it is not present in the set, otherwise it is ignored.</p>
+<h4 id='declaration-124'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_insert(SNAME *_set_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-124'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V</code> - Element to be added to the set.</li>
+</ol>
+<h4 id='returns-98'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the set.</li>
+<li><code>false</code> - If the element was not added to the set or if node allocation failed.</li>
+</ol>
+<h2 id='_remove-2'><a href="#treeset_function_index"><span id="treeset_remove"> _remove() </span></a></h2>
+<p>Removes a matching element from the set using the comparator function.</p>
+<h4 id='declaration-125'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_remove(SNAME *_set_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-125'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V</code> - Element to be removed from the set.</li>
+</ol>
+<h4 id='returns-99'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the set.</li>
+<li><code>false</code> - If the element was not fount in the set.</li>
+</ol>
+<h2 id='_insert_if'><a href="#treeset_function_index"><span id="treeset_insert_if"> _insert_if() </span></a></h2>
+<p>Inserts a new element to the set if the condition evaluates to true. The element is added only if it is not present in the set, otherwise it is ignored.</p>
+<h4 id='declaration-126'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_insert_if(SNAME *_set_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-126'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V</code> - Element to be added to the set.</li>
+<li><code>bool condition</code> - Condition for the element to be added.</li>
+</ol>
+<h4 id='returns-100'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully added to the set.</li>
+<li><code>false</code> - If the element was not added to the set, if node allocation failed or if the condition evaluated to false.</li>
+</ol>
+<h2 id='_remove_if'><a href="#treeset_function_index"><span id="treeset_remove_if"> _remove_if() </span></a></h2>
+<p>Removes a matching element from the set using the comparator function, only if the give condition evaluates to true.</p>
+<h4 id='declaration-127'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_remove_if(SNAME *_set_, V element, bool condition);</code></p>
+</blockquote>
+<h4 id='parameters-127'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V</code> - Element to be removed from the set.</li>
+<li><code>bool condition</code> - Condition for the element to be removed.</li>
+</ol>
+<h4 id='returns-101'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element was successfully removed from the set.</li>
+<li><code>false</code> - If the element was not fount in the set or if the condition evaluated to false.</li>
+</ol>
+<h2 id='_max'><a href="#treeset_function_index"><span id="treeset_max"> _max() </span></a></h2>
+<p>Retrieves the greatest element present in a given set, according to the set comparator function.</p>
+<h4 id='declaration-128'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_max(SNAME *_set_, V *value);</code></p>
+</blockquote>
+<h4 id='parameters-128'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V *value</code> - The resulting, greatest value in the set.</li>
+</ol>
+<h4 id='returns-102'>Returns</h4>
+<ol>
+<li><code>true</code> - If the set is not empty and a valid value was found.</li>
+<li><code>false</code> - If the set is empty and no valid value was found.</li>
+</ol>
+<h2 id='_min'><a href="#treeset_function_index"><span id="treeset_min"> _min() </span></a></h2>
+<p>Retrieves the smallest element present in a given set, according to the set comparator function.</p>
+<h4 id='declaration-129'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_min(SNAME *_set_, V *value);</code></p>
+</blockquote>
+<h4 id='parameters-129'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V *value</code> - The resulting, smallest value in the set.</li>
+</ol>
+<h4 id='returns-103'>Returns</h4>
+<ol>
+<li><code>true</code> - If the set is not empty and a valid value was found.</li>
+<li><code>false</code> - If the set is empty and no valid value was found.</li>
+</ol>
+<h2 id='_contains-5'><a href="#treeset_function_index"><span id="treeset_contains"> _contains() </span></a></h2>
+<p>Check if an element is present in the TreeSet according to the set comparator function.</p>
+<h4 id='declaration-130'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_contains(SNAME *_set_, V element);</code></p>
+</blockquote>
+<h4 id='parameters-130'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+<li><code>V element</code> - Element to check its presence in the TreeSet.</li>
+</ol>
+<h4 id='returns-104'>Returns</h4>
+<ol>
+<li><code>true</code> - If the element is present in the TreeSet.</li>
+<li><code>false</code> - If the element is not present in the TreeSet.</li>
+</ol>
+<h2 id='_empty-5'><a href="#treeset_function_index"><span id="treeset_empty"> _empty() </span></a></h2>
+<p>Returns true if the TreeSet is empty, otherwise false.</p>
+<h4 id='declaration-131'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_empty(SNAME *_set_);</code></p>
+</blockquote>
+<h4 id='parameters-131'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+</ol>
+<h4 id='returns-105'>Returns</h4>
+<ol>
+<li><code>true</code> - If the TreeSet is empty.</li>
+<li><code>false</code> - If there is at least one element in the TreeSet.</li>
+</ol>
+<h2 id='_count-5'><a href="#treeset_function_index"><span id="treeset_count"> _count() </span></a></h2>
+<p>Returns the amount of elements in the TreeSet.</p>
+<h4 id='declaration-132'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_count(SNAME *_set_);</code></p>
+</blockquote>
+<h4 id='parameters-132'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set_</code> - Target TreeSet.</li>
+</ol>
+<h4 id='returns-106'>Returns</h4>
+<ol>
+<li><code>size_t</code> - The amount of elements in the TreeSet.</li>
+</ol>
+<h2 id='_union'><a href="#treeset_function_index"><span id="treeset_union"> _union() </span></a></h2>
+<p>Creates a new set as the union of two sets, <code>_set1_</code> and <code>_set2_</code>. The union of two sets is formed by the elements that are present in either one of the sets, or in both.</p>
+<h4 id='declaration-133'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_union(SNAME *_set1_, SNAME *_set2_);</code></p>
+</blockquote>
+<h4 id='parameters-133'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set1_</code> - First operand set of union operation.</li>
+<li><code>SNAME *_set2_</code> - Second operand of set union operation.</li>
+</ol>
+<h4 id='returns-107'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - The resulting set representing the union of <code>_set1_</code> and <code>_set2_</code>.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_intersection'><a href="#treeset_function_index"><span id="treeset_intersection"> _intersection() </span></a></h2>
+<p>Creates a new set as the intersection of two sets, <code>_set1_</code> and <code>_set2_</code>. The intersection of two sets is formed only by the elements that are present in both sets.</p>
+<h4 id='declaration-134'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_intersection(SNAME *_set1_, SNAME *_set2_);</code></p>
+</blockquote>
+<h4 id='parameters-134'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set1_</code> - First operand set of intersection operation.</li>
+<li><code>SNAME *_set2_</code> - Second operand of set intersection operation.</li>
+</ol>
+<h4 id='returns-108'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - The resulting set representing the intersection of <code>_set1_</code> and <code>_set2_</code>.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_difference'><a href="#treeset_function_index"><span id="treeset_difference"> _difference() </span></a></h2>
+<p>Creates a new set as the difference of <code>_set1_</code> to <code>_set2_</code>. The difference of two sets is formed by the elements that are present in the first set, but not in the second one.</p>
+<h4 id='declaration-135'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_difference(SNAME *_set1_, SNAME *_set2_);</code></p>
+</blockquote>
+<h4 id='parameters-135'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set1_</code> - First operand set of difference operation.</li>
+<li><code>SNAME *_set2_</code> - Second operand set of difference operation.</li>
+</ol>
+<h4 id='returns-109'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - The resulting set representing the difference of <code>_set1_</code> and <code>_set2_</code>.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_symmetric_difference'><a href="#treeset_function_index"><span id="treeset_symmetric_difference"> _symmetric_difference() </span></a></h2>
+<p>Creates a new set as the symmetric difference of <code>_set1_</code> to <code>_set2_</code>. The symmetric difference of two sets is formed by the elements that are present in one of the sets, but not in the other.</p>
+<h4 id='declaration-136'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME *PFX##_symmetric_difference(SNAME *_set1_, SNAME *_set2_);</code></p>
+</blockquote>
+<h4 id='parameters-136'>Parameters</h4>
+<ol>
+<li><code>SNAME *_set1_</code> - First operand set of symmetric difference operation.</li>
+<li><code>SNAME *_set2_</code> - Second operand set of symmetric difference operation.</li>
+</ol>
+<h4 id='returns-110'>Returns</h4>
+<ol>
+<li><code>SNAME *</code> - The resulting set representing the symmetric difference of <code>_set1_</code> and <code>_set2_</code>.</li>
+<li><code>NULL</code> - If allocation fails.</li>
+</ol>
+<h2 id='_iter_new-5'><a href="#treeset_function_index"><span id="treeset_iter_new"> _iter_new() </span></a></h2>
+<p>Creates a new iterator allocated on the heap and initializes it with a target TreeSet. The iterator&#39;s cursor will be positioned at the smallest element node of the TreeSet.</p>
+<h4 id='declaration-137'>Declaration</h4>
+<blockquote>
+<p><code>FMOD SNAME##_iter *PFX##_iter_new(SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-137'>Parameters</h4>
+<ol>
+<li><code>SNAME *target</code> - Target TreeSet.</li>
+</ol>
+<h4 id='returns-111'>Returns</h4>
+<ol>
+<li><code>SNAME##_iter *</code> - A heap allocated TreeSet iterator.</li>
+</ol>
+<h2 id='_iter_free-5'><a href="#treeset_function_index"><span id="treeset_iter_free"> _iter_free() </span></a></h2>
+<p>Frees a heap allocated TreeSet iterator from memory.</p>
+<h4 id='declaration-138'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_free(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-138'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be freed from memory.</li>
+</ol>
+<h2 id='_iter_init-5'><a href="#treeset_function_index"><span id="treeset_iter_init"> _iter_init() </span></a></h2>
+<p>Initializes an iterator with a given target TreeSet. The iterator&#39;s cursor will be positioned at the smallest element node of the TreeSet. The iterator must have been allocated already. This function simply initializes the structure.</p>
+<h4 id='declaration-139'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_init(SNAME##_iter *iter, SNAME *target);</code></p>
+</blockquote>
+<h4 id='parameters-139'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Iterator to be initialized.</li>
+<li><code>SNAME *target</code> - Target TreeSet.</li>
+</ol>
+<h2 id='_iter_start-5'><a href="#treeset_function_index"><span id="treeset_iter_start"> _iter_start() </span></a></h2>
+<p>Returns true if the iterator has reached the start of the TreeSet (smallest element). If false, the iterator is still possible to iterate to a previous element.</p>
+<h4 id='declaration-140'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-140'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-112'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the start of the TreeSet.</li>
+<li><code>false</code> - If the iterator has not reached the start of the TreeSet.</li>
+</ol>
+<h2 id='_iter_end-5'><a href="#treeset_function_index"><span id="treeset_iter_end"> _iter_end() </span></a></h2>
+<p>Returns true if the iterator has reached the end of the TreeSet (greatest element). If false, the iterator is still possible to iterate to a next element.</p>
+<h4 id='declaration-141'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-141'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-113'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has reached the end of the TreeSet.</li>
+<li><code>false</code> - If the iterator has not reached the end of the TreeSet.</li>
+</ol>
+<h2 id='_iter_to_start-5'><a href="#treeset_function_index"><span id="treeset_iter_to_start"> _iter_to_start() </span></a></h2>
+<p>Moves the cursor of the target iterator to the start (smallest element) of the TreeSet.</p>
+<h4 id='declaration-142'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_start(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-142'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_to_end-5'><a href="#treeset_function_index"><span id="treeset_iter_to_end"> _iter_to_end() </span></a></h2>
+<p>Moves the cursor of the target iterator to the end (greatest element) of the TreeSet.</p>
+<h4 id='declaration-143'>Declaration</h4>
+<blockquote>
+<p><code>FMOD void PFX##_iter_to_end(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-143'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h2 id='_iter_next-5'><a href="#treeset_function_index"><span id="treeset_iter_next"> _iter_next() </span></a></h2>
+<p>Moves the target TreeSet iterator to the next element if possible.</p>
+<h4 id='declaration-144'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_next(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-144'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-114'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the next element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the next element, hence reaching the end of the iteration.</li>
+</ol>
+<h2 id='_iter_prev-5'><a href="#treeset_function_index"><span id="treeset_iter_prev"> _iter_prev() </span></a></h2>
+<p>Moves the target TreeSet iterator to the previous element if possible.</p>
+<h4 id='declaration-145'>Declaration</h4>
+<blockquote>
+<p><code>FMOD bool PFX##_iter_prev(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-145'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-115'>Returns</h4>
+<ol>
+<li><code>true</code> - If the iterator has moved to the previous element in the iteration.</li>
+<li><code>false</code> - If the iterator could not move to the previous element, hence reaching the start of the iteration.</li>
+</ol>
+<h2 id='_iter_value-5'><a href="#treeset_function_index"><span id="treeset_iter_value"> _iter_value() </span></a></h2>
+<p>Returns the element pointed by the target iterator&#39;s cursor. The iterator must have been initialized already.</p>
+<h4 id='declaration-146'>Declaration</h4>
+<blockquote>
+<p><code>FMOD V PFX##_iter_value(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-146'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-116'>Returns</h4>
+<ol>
+<li><code>V</code> - The element pointed by the iterator&#39;s cursor.</li>
+</ol>
+<h4 id='undefined-behavior-18'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized;</li>
+<li>If the iterator&#39;s target is invalid.</li>
+</ul>
+<h2 id='_iter_index-5'><a href="#treeset_function_index"><span id="treeset_iter_index"> _iter_index() </span></a></h2>
+<p>Returns the current position of the iterator relative to all the elements in the iteration. The index is <code>0</code> based and goes up to <code>count - 1</code>.</p>
+<h4 id='declaration-147'>Declaration</h4>
+<blockquote>
+<p><code>FMOD size_t PFX##_iter_index(SNAME##_iter *iter);</code></p>
+</blockquote>
+<h4 id='parameters-147'>Parameters</h4>
+<ol>
+<li><code>SNAME##_iter *iter</code> - Target iterator.</li>
+</ol>
+<h4 id='returns-117'>Returns</h4>
+<ol>
+<li><code>size_t</code> - Current position of the iterator relative to all elements in the iteration.</li>
+</ol>
+<h4 id='undefined-behavior-19'>Undefined Behavior</h4>
+<ul>
+<li>If the iterator points to <code>NULL</code>;</li>
+<li>If the iterator has not been properly initialized.</li>
+</ul>
+<h1 id='foreach'><a href="#collections_index">ForEach</a></h1>
+<p>The ForEach macro is an utility that can be used to simplify iterations through a collections. There are two ForEach macros:</p>
+
+<ul>
+<li><code>FOR_EACH</code> - Iterates over a collection forwards, from the start to the end*.</li>
+<li><code>FOR_EACH_REV</code> - Iterates over a collection backwards, from the end to the start*.</li>
+</ul>
+
+<p>* Check out the documentation of each collection to know which elements are regarded as the starting point and ending point of an iteration.</p>
+<h3 id='parameters-148'>Parameters</h3>
+<ul>
+<li><code>PFX</code> - The prefix of the functions of the defined collection.</li>
+<li><code>SNAME</code> - The defined name of your collection</li>
+<li><code>TARGET</code> - The target collection to be iterated over.</li>
+<li><code>BODY</code> - The body of your loop where a local variable called <code>iter</code> will be available.</li>
+</ul>
+<h3 id='example-10'>Example</h3><pre class="highlight c tab-c"><code><span class="cp">#include "hashmap.h"
+#include "foreach.h" // The ForEach macros are defined here
+#include &lt;stdio.h&gt;
+</span>
+<span class="c1">// Int hash function
+</span><span class="kt">size_t</span> <span class="nf">inthash</span><span class="p">(</span><span class="kt">int</span> <span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">size_t</span> <span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+    <span class="n">a</span> <span class="o">+=</span> <span class="o">~</span><span class="p">(</span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span><span class="p">);</span>
+    <span class="n">a</span> <span class="o">^=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">);</span>
+    <span class="n">a</span> <span class="o">+=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">a</span> <span class="o">^=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">);</span>
+    <span class="n">a</span> <span class="o">+=</span> <span class="o">~</span><span class="p">(</span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="mi">11</span><span class="p">);</span>
+    <span class="n">a</span> <span class="o">^=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Int compare function
+</span><span class="kt">int</span> <span class="nf">intcmp</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Generate all the code for the hashmap
+</span><span class="n">HASHMAP_GENERATE</span><span class="p">(</span><span class="n">hm</span><span class="p">,</span> <span class="n">hashmap</span><span class="p">,</span> <span class="cm">/* FMOD */</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">double</span><span class="p">)</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Create a new hashmap with custom hash function
+</span>    <span class="c1">// The comparison function is only required to know if the key looked for was found
+</span>    <span class="n">hashmap</span> <span class="o">*</span><span class="n">map</span> <span class="o">=</span> <span class="n">hm_new</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">.</span><span class="mi">6</span><span class="p">,</span> <span class="n">intcmp</span><span class="p">,</span> <span class="n">inthash</span><span class="p">);</span>
+
+    <span class="c1">// Add keys mapped to a value
+</span>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">hm_insert</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">i</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Iterate over the HashMap without the FOR_EACH macro
+</span>    <span class="k">for</span> <span class="p">(</span><span class="n">hashmap_iter</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">map</span><span class="o">-&gt;</span><span class="n">it_start</span><span class="p">(</span><span class="n">map</span><span class="p">);</span> <span class="o">!</span><span class="n">hm_iter_end</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">);</span> <span class="n">hm_iter_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"MAP[%4d] = %.3lf</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">hm_iter_key</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">),</span> <span class="n">hm_iter_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Iterate over the HashMap using FOR_EACH macro
+</span>    <span class="n">FOR_EACH</span><span class="p">(</span><span class="n">hm</span><span class="p">,</span> <span class="n">hashmap</span><span class="p">,</span> <span class="n">map</span><span class="p">,</span> <span class="p">{</span>
+        <span class="c1">// Inside, the variable 'iter' will be available and from it you can access
+</span>        <span class="c1">// the key, value or index.
+</span>        <span class="n">printf</span><span class="p">(</span><span class="s">"MAP[%4d] = %.3lf</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">hm_iter_key</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">),</span> <span class="n">hm_iter_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">));</span>
+    <span class="p">})</span>
+
+    <span class="n">hm_free</span><span class="p">(</span><span class="n">map</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
